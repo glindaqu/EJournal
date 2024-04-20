@@ -2,5 +2,5 @@
 Electronic journal application. Indev
 
 
-##What's it?
-######This simple application
+## What's it?
+###### This simple application
