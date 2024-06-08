@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">EJournal</string>
+
+    <string name="quick_option_journal">Журнал</string>
+    <string name="quick_option_omissions">Пропуски</string>
+    <string name="quick_option_export_to">Экспорт</string>
+    <string name="dest_home">Главная</string>
+    <string name="dest_journal">Журнал</string>
+    <string name="dest_omissions">Пропуски</string>
+    <string name="dest_settings">Настройки</string>
+    <string name="bot_bar_slider_students">Список студентов</string>
+    <string name="bot_bar_slider_subjects">Список предметов</string>
+    <string name="bot_bar_slider_settings">Настройки</string>
 </resources>

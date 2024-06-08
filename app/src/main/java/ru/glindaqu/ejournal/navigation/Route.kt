@@ -5,6 +5,8 @@ package ru.glindaqu.ejournal.navigation
  *
  * @author glindaqu
  * @param[name] Название экрана (текст)
+ *
+ * @property[home] Роут для домашнего экрана
  */
 data class Route(val name: String) {
     /**
