@@ -11,12 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.DEFAULT_CARD_ELEVATION
 import ru.glindaqu.ejournal.dataModels.BottomBarItemData
 import ru.glindaqu.ejournal.ui.components.bottomSlider.BottomSlider
 
 @Composable
-fun BottomBar(destinations: List<BottomBarItemData>) {
+fun BottomBar(destinations: List<BottomBarItemData>, controller: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +38,8 @@ fun BottomBar(destinations: List<BottomBarItemData>) {
             destinations.forEach { el ->
                 BottomBarItemView(
                     itemData = el,
-                    selected = false
+                    selected = false,
+                    controller = controller
                 )
             }
         }

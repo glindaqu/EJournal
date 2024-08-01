@@ -8,13 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.dataModels.BottomBarItemData
 
 @Composable
-fun RowScope.BottomBarItemView(itemData: BottomBarItemData, selected: Boolean) {
+fun RowScope.BottomBarItemView(
+    itemData: BottomBarItemData,
+    selected: Boolean,
+    controller: NavHostController
+) {
     NavigationBarItem(
         selected = selected,
-        onClick = {},
+        onClick = { controller.navigate(itemData.destination) },
         icon = {
             Icon(
                 painter = painterResource(id = itemData.icon),

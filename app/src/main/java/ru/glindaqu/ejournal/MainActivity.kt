@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import ru.glindaqu.ejournal.navigation.NavGraph
 import ru.glindaqu.ejournal.navigation.RoutesDao
 import ru.glindaqu.ejournal.ui.components.bottomBar.BottomBar
@@ -23,9 +24,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
+            val navHostController = rememberNavController()
             EJournalTheme {
                 val routes = RoutesDao()
-                Scaffold(bottomBar = { BottomBar(destinations = routes.destinations) }) {
+                Scaffold(
+                    bottomBar = {
+                        BottomBar(
+                            destinations = routes.destinations,
+                            controller = navHostController
+                        )
+                    }
+                ) {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -33,7 +42,7 @@ class MainActivity : ComponentActivity() {
                             .padding(top = 10.dp),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        NavGraph()
+                        NavGraph(navHostController = navHostController)
                     }
                 }
             }

@@ -7,6 +7,9 @@ package ru.glindaqu.ejournal.navigation
  * @param[name] Название экрана (текст)
  *
  * @property[home] Роут для домашнего экрана
+ * @property[journal] Роут для экрана журнала
+ * @property[statistics] Роут для экрана статистики
+ * @property[settings] Роут для экрана настроек
  */
 data class Route(val name: String) {
     /**
@@ -15,8 +18,10 @@ data class Route(val name: String) {
      */
     companion object {
         val home = Route("Home")
+        val journal = Route("Journal")
+        val statistics = Route("Statistics")
+        val settings = Route("Settings")
     }
-
     /**
      * Функция получения текущего роута
      *
