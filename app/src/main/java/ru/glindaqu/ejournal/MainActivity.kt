@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.compose.rememberNavController
 import ru.glindaqu.ejournal.navigation.NavGraph
 import ru.glindaqu.ejournal.navigation.RoutesDao
