@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "EJournal"
 include(":app")
+include(":dateWheelPick")

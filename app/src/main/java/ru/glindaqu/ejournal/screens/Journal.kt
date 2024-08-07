@@ -38,7 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
 import ru.glindaqu.ejournal.dataModels.JournalRowData
+import ru.glindaqu.ejournal.modules.wheelDatePick.WheelDatePick
+import ru.glindaqu.ejournal.modules.wheelDatePick.rememberWheelDatePickState
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
@@ -50,7 +53,7 @@ suspend fun scrollHeaderToDay(day: Int, itemSizeInPx: Int, scrollState: ScrollSt
     scrollState.animateScrollTo(day * itemSizeInPx)
 }
 
-@SuppressLint("UnrememberedMutableState")
+@SuppressLint("UnrememberedMutableState", "SimpleDateFormat")
 @Composable
 fun Journal() {
 
@@ -62,25 +65,32 @@ fun Journal() {
     val hScrollState = rememberScrollState()
     val offsetPx = DEFAULT_TABLE_CELL_SIZE.toPx()
 
+    var selectedDate by remember {
+        mutableStateOf(Date())
+    }
+
     LaunchedEffect(Unit) {
         scrollHeaderToDay(LocalDate.now().dayOfMonth - 1, offsetPx, hScrollState)
     }
 
     val displayOnlySurname = derivedStateOf {
         when {
-            hScrollState.value < 0 -> false
+            hScrollState.value <= 0 -> false
             else -> true
         }
     }
 
+    val wheelDatePickState = rememberWheelDatePickState()
+
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
 
+    WheelDatePick(state = wheelDatePickState, defaultDate = selectedDate, onDateSelected = { selectedDate = it })
 
     Column {
         Row {
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Select Date")
+            Button(onClick = { wheelDatePickState.show = true }) {
+                Text(text = SimpleDateFormat("dd MMMM").format(selectedDate))
             }
         }
         Column {
