@@ -1,6 +1,5 @@
 package ru.glindaqu.ejournal.dataModels
 
-
 /**
  * Simple excepting data format:
  *  student 1 {
@@ -32,7 +31,7 @@ data class JournalRowData(
     val studentName: String,
     val studentLastname: String,
     val studentPatronymic: String,
-    val data: Array<StudentDay>
+    val data: Array<StudentDay>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -61,7 +60,7 @@ data class JournalRowData(
 
 data class StudentDay(
     val date: Long,
-    val pairs: Array<AcademicPair>
+    val pairs: Array<AcademicPair>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -72,16 +71,14 @@ data class StudentDay(
         return pairs.contentEquals(other.pairs)
     }
 
-    override fun hashCode(): Int {
-        return pairs.contentHashCode()
-    }
+    override fun hashCode(): Int = pairs.contentHashCode()
 }
 
 data class AcademicPair(
     val uid: Long,
     val pairInfo: AcademicPairInfo,
     val isStudentAbsence: Boolean,
-    val marks: Array<Short>
+    val marks: Array<Short>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -108,12 +105,12 @@ data class AcademicPair(
 data class AcademicPairInfo(
     val id: Int,
     val teacher: TeacherInfo,
-    val title: String
+    val title: String,
 )
 
 data class TeacherInfo(
     val id: Int,
     val name: String,
     val lastname: String,
-    val patronymic: String
+    val patronymic: String,
 )

@@ -14,26 +14,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.glindaqu.ejournal.modules.simpleCalendar.ui.theme.blue1
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun SimpleCalendarBodyItem(
     text: String,
     isSelected: Boolean,
     selectedColor: Color = blue1,
-    clickable: () -> Unit
+    clickable: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .size(50.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .clickable { clickable() }
-            .background(
-                color = if (isSelected) selectedColor else Color.Transparent,
-                shape = RoundedCornerShape(15.dp)
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .wrapContentSize()
+                .size(50.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .clickable { clickable() }
+                .background(
+                    color = if (isSelected) selectedColor else Color.Transparent,
+                    shape = RoundedCornerShape(15.dp),
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         SimpleCalendarHeaderItem(it = text, selected = isSelected)
     }
 }
-

@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
 
+@Suppress("ktlint:standard:function-naming")
 /**
  * Функция виджета-календаря, обычно занимает весь экарн и позволяет отслеживать нажатия на
  * конкретные числа. Подгрузка текущего числа, дат и их смещение происходит автоматически,
@@ -47,7 +48,7 @@ fun SimpleCalendar(
     shape: RoundedCornerShape = RoundedCornerShape(5.dp),
     spacerLineColor: Color = Color.Black,
     itemSelectedColor: Color = blue1,
-    onDateSelected: (date: Date) -> Unit
+    onDateSelected: (date: Date) -> Unit,
 ) {
     val currentDay = dayOnly.format(Date()).toInt()
     val month = LocalDate.now().month
@@ -56,13 +57,14 @@ fun SimpleCalendar(
         elevation = CardDefaults.cardElevation(elevation),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        modifier = Modifier.padding(top = 10.dp)
+        modifier = Modifier.padding(top = 10.dp),
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             LazyVerticalGrid(
-                modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .height(30.dp),
+                modifier =
+                    Modifier
+                        .padding(vertical = 5.dp)
+                        .height(30.dp),
                 columns = GridCells.Fixed(7),
             ) {
                 items(weekdayTitles) {
@@ -70,19 +72,21 @@ fun SimpleCalendar(
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp)
-                    .padding(bottom = 3.dp)
-                    .height(0.5.dp)
-                    .background(spacerLineColor)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp)
+                        .padding(bottom = 3.dp)
+                        .height(0.5.dp)
+                        .background(spacerLineColor),
             )
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(7),
                 verticalItemSpacing = 10.dp,
-                modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .height(300.dp)
+                modifier =
+                    Modifier
+                        .padding(vertical = 5.dp)
+                        .height(300.dp),
             ) {
                 items((1..<dayOffset).toList()) {
                     SimpleCalendarBodyPlaceholder()
@@ -96,7 +100,7 @@ fun SimpleCalendar(
                             val date =
                                 SimpleDateFormat("M-d-yyyy").parse("${month.value}-$it-${LocalDate.now().year}")
                             onDateSelected(date ?: Date())
-                        }
+                        },
                     )
                 }
             }

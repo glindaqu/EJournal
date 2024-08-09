@@ -41,43 +41,48 @@ import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import java.util.Calendar
 import java.util.Date
 
-open class Location(val months: List<String>) {
+open class Location(
+    val months: List<String>,
+) {
     companion object {
-        val ENG = Location(
-            listOf(
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December"
+        val ENG =
+            Location(
+                listOf(
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ),
             )
-        )
-        val RU = Location(
-            listOf(
-                "Январь",
-                "Февраль",
-                "Март",
-                "Апрель",
-                "Май",
-                "Июнь",
-                "Июль",
-                "Август",
-                "Сентябрь",
-                "Октябрь",
-                "Ноябрь",
-                "Декабрь"
+        val RU =
+            Location(
+                listOf(
+                    "Январь",
+                    "Февраль",
+                    "Март",
+                    "Апрель",
+                    "Май",
+                    "Июнь",
+                    "Июль",
+                    "Август",
+                    "Сентябрь",
+                    "Октябрь",
+                    "Ноябрь",
+                    "Декабрь",
+                ),
             )
-        )
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -85,7 +90,7 @@ fun WheelDatePick(
     state: WheelDatePickState,
     location: Location = Location.RU,
     defaultDate: Date = Date(),
-    onDateSelected: (Date) -> Unit
+    onDateSelected: (Date) -> Unit,
 ) {
     if (!state.show) {
         return
@@ -108,26 +113,33 @@ fun WheelDatePick(
         Card(
             modifier = Modifier.wrapContentHeight(),
             shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground),
         ) {
             Column(
-                modifier = Modifier.padding(
-                    horizontal = DEFAULT_HORIZONTAL_PADDING, vertical = DEFAULT_VERTICAL_PADDING
-                )
+                modifier =
+                    Modifier.padding(
+                        horizontal = DEFAULT_HORIZONTAL_PADDING,
+                        vertical = DEFAULT_VERTICAL_PADDING,
+                    ),
             ) {
                 PickSectionTitle(title = "Месяц")
                 FlowRow {
                     for (i in location.months.indices) {
-                        MonthItem(month = location.months[i],
+                        MonthItem(
+                            month = location.months[i],
                             monthIndex = i,
                             isSelect = month == i,
                             onClick = {
                                 month = it
-                            })
+                            },
+                        )
                     }
                 }
                 PickSectionTitle(title = "Число")
-                FlowRow(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     for (i in 1..daysInMonth) {
                         DayItem(day = i, isSelect = day == i, onClick = {
                             day = it
@@ -135,29 +147,35 @@ fun WheelDatePick(
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp),
-                    contentAlignment = Alignment.CenterEnd
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                    contentAlignment = Alignment.CenterEnd,
                 ) {
                     Button(
                         onClick = {
                             onDateSelected(
                                 Date(
-                                    calendar.get(Calendar.YEAR), month, day
-                                )
+                                    calendar.get(Calendar.YEAR),
+                                    month,
+                                    day,
+                                ),
                             )
                             state.show = false
-                        }, enabled = isConfirmEnabled, colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onBackground,
-                            disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
-                        )
+                        },
+                        enabled = isConfirmEnabled,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
+                            ),
                     ) {
                         Text(
                             text = "OK",
                             fontSize = 16.sp,
                             color = if (isConfirmEnabled) MaterialTheme.colorScheme.primary else Color.White,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
@@ -166,37 +184,46 @@ fun WheelDatePick(
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 internal fun PickSectionTitle(title: String) {
     Text(
         text = title,
         fontSize = 22.sp,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .padding(7.dp)
-            .padding(top = 7.dp)
+        modifier =
+            Modifier
+                .padding(7.dp)
+                .padding(top = 7.dp),
     )
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
-internal fun MonthItem(month: String, monthIndex: Int, isSelect: Boolean, onClick: (Int) -> Unit) {
+internal fun MonthItem(
+    month: String,
+    monthIndex: Int,
+    isSelect: Boolean,
+    onClick: (Int) -> Unit,
+) {
     val cardColor =
         if (isSelect) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
     val rippleColor =
         if (!isSelect) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
     val textColor = if (isSelect) Color.White else Color.Black
     Card(
-        modifier = Modifier
-            .padding(3.dp)
-            .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = rippleColor)
-            ) {
-                onClick(monthIndex)
-            },
+        modifier =
+            Modifier
+                .padding(3.dp)
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = rippleColor),
+                ) {
+                    onClick(monthIndex)
+                },
         shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
-        colors = CardDefaults.cardColors(containerColor = cardColor)
+        colors = CardDefaults.cardColors(containerColor = cardColor),
     ) {
         Text(
             text = month,
@@ -207,33 +234,41 @@ internal fun MonthItem(month: String, monthIndex: Int, isSelect: Boolean, onClic
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
-internal fun DayItem(day: Int, isSelect: Boolean, onClick: (Int) -> Unit) {
+internal fun DayItem(
+    day: Int,
+    isSelect: Boolean,
+    onClick: (Int) -> Unit,
+) {
     val cardColor =
         if (isSelect) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
     val rippleColor =
         if (!isSelect) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
     val textColor = if (isSelect) Color.White else Color.Black
     Card(
-        modifier = Modifier
-            .padding(3.dp)
-            .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = rippleColor)
-            ) { onClick(day) },
+        modifier =
+            Modifier
+                .padding(3.dp)
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = rippleColor),
+                ) { onClick(day) },
         shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
         colors = CardDefaults.cardColors(containerColor = cardColor),
     ) {
         Box(
-            contentAlignment = Alignment.Center, modifier = Modifier
-                .size(45.dp)
+            contentAlignment = Alignment.Center,
+            modifier =
+                Modifier
+                    .size(45.dp),
         ) {
             Text(
                 text = day.toString(),
                 color = textColor,
                 textAlign = TextAlign.Center,
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
         }
     }

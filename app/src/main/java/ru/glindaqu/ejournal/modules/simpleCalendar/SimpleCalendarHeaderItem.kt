@@ -10,16 +10,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
+@Suppress("ktlint:standard:function-naming")
 @Composable
-fun SimpleCalendarHeaderItem(it: String, color: Color = Color.Black, selected: Boolean = false) {
+fun SimpleCalendarHeaderItem(
+    it: String,
+    color: Color = Color.Black,
+    selected: Boolean = false,
+) {
     Text(
         text = it,
         fontSize = 16.sp,
         textAlign = TextAlign.Center,
         color = color,
         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-        modifier = Modifier
-            .padding(2.dp)
+        modifier =
+            Modifier
+                .padding(2.dp),
     )
 }

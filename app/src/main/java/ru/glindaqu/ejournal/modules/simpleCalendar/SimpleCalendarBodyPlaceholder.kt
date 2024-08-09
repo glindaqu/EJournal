@@ -11,17 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun SimpleCalendarBodyPlaceholder() {
     Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .size(50.dp)
-            .background(
-                color = Color.Transparent,
-                shape = RoundedCornerShape(15.dp)
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .wrapContentSize()
+                .size(50.dp)
+                .background(
+                    color = Color.Transparent,
+                    shape = RoundedCornerShape(15.dp),
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         SimpleCalendarHeaderItem(it = "1", color = Color.White)
     }

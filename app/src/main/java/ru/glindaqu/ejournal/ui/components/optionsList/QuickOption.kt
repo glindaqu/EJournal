@@ -22,42 +22,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.glindaqu.ejournal.DEFAULT_CARD_ELEVATION
 
-
+@Suppress("ktlint:standard:function-naming")
 @Composable
-fun QuickOption(title: String, onClick: () -> Unit) {
+fun QuickOption(
+    title: String,
+    onClick: () -> Unit,
+) {
     Card(
         elevation = CardDefaults.cardElevation(DEFAULT_CARD_ELEVATION),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onBackground),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 10.dp
-                )
-                .padding(start = 20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 10.dp,
+                    ).padding(start = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = title,
                 color = Color.Black,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             IconButton(
                 onClick = {
                     onClick()
-                }
+                },
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.Black,
-                    modifier = Modifier
-                        .size(30.dp)
+                    modifier =
+                        Modifier
+                            .size(30.dp),
                 )
             }
         }

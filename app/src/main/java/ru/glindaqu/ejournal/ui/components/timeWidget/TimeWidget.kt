@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import ru.glindaqu.ejournal.modules.simpleCalendar.hoursAndMinutes
 import java.util.Date
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun TimeWidget() {
     var timeState by remember {
@@ -25,18 +26,20 @@ fun TimeWidget() {
     lateinit var timerRunner: Runnable
     val handler = Handler(Looper.getMainLooper())
 
-    timerRunner = Runnable {
-        timeState = hoursAndMinutes.format(Date())
-        handler.postDelayed(timerRunner, 1_000)
-    }
+    timerRunner =
+        Runnable {
+            timeState = hoursAndMinutes.format(Date())
+            handler.postDelayed(timerRunner, 1_000)
+        }
 
     Text(
         text = timeState,
         fontSize = 40.sp,
         color = Color.Black,
         textAlign = TextAlign.Start,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     )
 
     DisposableEffect(Unit) {

@@ -10,14 +10,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.glindaqu.ejournal.R
 
-
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun QuickOptionsList() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         QuickOption(title = stringResource(id = R.string.quick_option_journal)) { }
         QuickOption(title = stringResource(id = R.string.quick_option_omissions)) { }

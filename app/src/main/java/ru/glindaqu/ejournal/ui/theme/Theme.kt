@@ -7,18 +7,18 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val MainPalette = lightColorScheme(
-    background = Color(0xFFF7E3E4),
-    primary = Color(0xFFBB7F81),
-    onBackground = Color.White,
-    errorContainer = Color(0xFFFF9595),
-    error = Color(0xFFBB7F81)
-)
+private val MainPalette =
+    lightColorScheme(
+        background = Color(0xFFF7E3E4),
+        primary = Color(0xFFBB7F81),
+        onBackground = Color.White,
+        errorContainer = Color(0xFFFF9595),
+        error = Color(0xFFBB7F81),
+    )
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
-fun EJournalTheme(
-    content: @Composable () -> Unit
-) {
+fun EJournalTheme(content: @Composable () -> Unit) {
     val systemUIController = rememberSystemUiController()
 
     SideEffect {
@@ -29,6 +29,6 @@ fun EJournalTheme(
     MaterialTheme(
         colorScheme = MainPalette,
         typography = Typography,
-        content = content
+        content = content,
     )
 }
