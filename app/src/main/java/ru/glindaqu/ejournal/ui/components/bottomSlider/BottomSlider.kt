@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.R
+import ru.glindaqu.ejournal.navigation.Route
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun BottomSlider() {
+fun BottomSlider(navHostController: NavHostController) {
     LazyRow(
         modifier =
             Modifier
@@ -28,7 +30,9 @@ fun BottomSlider() {
             BottomSliderItem(
                 textSrc = R.string.bot_bar_slider_subjects,
                 painterSrc = R.drawable.subjects,
-            ) {}
+            ) {
+                navHostController.navigate(Route.subjects.get())
+            }
         }
         item {
             BottomSliderItem(

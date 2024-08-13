@@ -1,7 +1,10 @@
 package ru.glindaqu.ejournal.viewModel.api
 
-import ru.glindaqu.ejournal.dataModels.JournalRowData
+import android.content.Context
+import kotlinx.coroutines.flow.Flow
 
 interface IJournalViewModel {
-    val studentsList: List<JournalRowData>
+    fun attachContext(context: Context)
+
+    fun getSubjects(): Flow<List<String>>
 }

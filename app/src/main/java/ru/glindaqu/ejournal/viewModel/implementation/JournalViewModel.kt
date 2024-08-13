@@ -1,19 +1,23 @@
 package ru.glindaqu.ejournal.viewModel.implementation
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import kotlinx.coroutines.flow.Flow
 import ru.glindaqu.ejournal.dataModels.AcademicPair
 import ru.glindaqu.ejournal.dataModels.AcademicPairInfo
 import ru.glindaqu.ejournal.dataModels.JournalRowData
 import ru.glindaqu.ejournal.dataModels.StudentDay
 import ru.glindaqu.ejournal.dataModels.TeacherInfo
+import ru.glindaqu.ejournal.database.room.AppDB
 import ru.glindaqu.ejournal.viewModel.api.IJournalViewModel
+import java.lang.ref.WeakReference
 
 class JournalViewModel(
     app: Application,
 ) : AndroidViewModel(app),
     IJournalViewModel {
-    override val studentsList =
+    val studentsList =
         listOf(
             JournalRowData(
                 id = 1,
@@ -126,4 +130,16 @@ class JournalViewModel(
                     ),
             ),
         )
+
+    private lateinit var context: WeakReference<Context>
+
+    override fun getSubjects(): Flow<List<String>> {
+        if (this.context.get() == null) throw Exception("Context can't be null")
+        val pairDao = AppDB.getDatabase(this.context.get()!!).getPairDao()
+        return pairDao.getAllTitles()
+    }
+
+    override fun attachContext(context: Context) {
+        this.context = WeakReference(context)
+    }
 }

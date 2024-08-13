@@ -1,6 +1,5 @@
 package ru.glindaqu.ejournal.ui.components.bottomBar
 
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,30 +15,36 @@ import ru.glindaqu.ejournal.DEFAULT_CARD_ELEVATION
 import ru.glindaqu.ejournal.dataModels.BottomBarItemData
 import ru.glindaqu.ejournal.ui.components.bottomSlider.BottomSlider
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
-fun BottomBar(destinations: List<BottomBarItemData>, controller: NavHostController) {
+fun BottomBar(
+    destinations: List<BottomBarItemData>,
+    controller: NavHostController,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .graphicsLayer {
-                clip = true
-                shape = RoundedCornerShape(
-                    topStart = 15.dp,
-                    topEnd = 15.dp
-                )
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .graphicsLayer {
+                    clip = true
+                    shape =
+                        RoundedCornerShape(
+                            topStart = 15.dp,
+                            topEnd = 15.dp,
+                        )
+                },
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BottomSlider()
+        BottomSlider(controller)
         NavigationBar(
             tonalElevation = DEFAULT_CARD_ELEVATION,
-            containerColor = MaterialTheme.colorScheme.onBackground
+            containerColor = MaterialTheme.colorScheme.onBackground,
         ) {
             destinations.forEach { el ->
                 BottomBarItemView(
                     itemData = el,
                     selected = false,
-                    controller = controller
+                    controller = controller,
                 )
             }
         }

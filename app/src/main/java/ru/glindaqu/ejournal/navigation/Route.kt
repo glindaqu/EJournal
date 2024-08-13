@@ -11,7 +11,9 @@ package ru.glindaqu.ejournal.navigation
  * @property[statistics] Роут для экрана статистики
  * @property[settings] Роут для экрана настроек
  */
-data class Route(val name: String) {
+data class Route(
+    val name: String,
+) {
     /**
      * Статическими являются сами роуты, что позволит избежать
      * необходимость их создания для каждого кейса в отдельности
@@ -21,13 +23,13 @@ data class Route(val name: String) {
         val journal = Route("Journal")
         val statistics = Route("Statistics")
         val settings = Route("Settings")
+        val subjects = Route("Subjects")
     }
+
     /**
      * Функция получения текущего роута
      *
      * @return Возвращает строковый литерал, соответствующий роуту
      */
-    fun get(): String {
-        return this.name
-    }
+    fun get(): String = this.name
 }

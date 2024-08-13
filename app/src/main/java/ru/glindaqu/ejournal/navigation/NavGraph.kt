@@ -6,8 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.glindaqu.ejournal.screens.Home
 import ru.glindaqu.ejournal.screens.Journal
+import ru.glindaqu.ejournal.screens.subjects.Subjects
 
-
+@Suppress("ktlint:standard:function-naming")
 /**
  * Функция представляет собой базовый компонент навигации приложения
  *
@@ -17,11 +18,12 @@ import ru.glindaqu.ejournal.screens.Journal
 fun NavGraph(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Route.journal.get()
+        startDestination = Route.journal.get(),
     ) {
         composable(Route.home.get()) { Home() }
         composable(Route.journal.get()) { Journal() }
         composable(Route.statistics.get()) { Home() }
         composable(Route.settings.get()) { Home() }
+        composable(Route.subjects.get()) { Subjects() }
     }
 }

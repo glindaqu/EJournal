@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 }
 
 android {
@@ -71,4 +72,6 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     // navigation
     implementation(libs.androidx.navigation.compose)
+
+    kapt("androidx.room:room-compiler:2.6.1")
 }

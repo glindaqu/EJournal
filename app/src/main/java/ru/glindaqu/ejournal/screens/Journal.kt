@@ -1,7 +1,6 @@
 package ru.glindaqu.ejournal.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -24,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
 import ru.glindaqu.ejournal.dataModels.JournalRowData
+import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialog
+import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
+import ru.glindaqu.ejournal.modules.dayInfo.rememberDayInfoDialogState
+import ru.glindaqu.ejournal.modules.subjectPick.SubjectPick
+import ru.glindaqu.ejournal.modules.subjectPick.rememberSubjectPickState
 import ru.glindaqu.ejournal.modules.wheelDatePick.WheelDatePick
 import ru.glindaqu.ejournal.modules.wheelDatePick.rememberWheelDatePickState
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
@@ -91,21 +96,32 @@ fun Journal() {
             }
         }
 
-    val wheelDatePickState = rememberWheelDatePickState()
-
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
+    viewModel.attachContext(LocalContext.current)
+
+    val wheelDatePickState = rememberWheelDatePickState()
+    val dayInfoDialogState = rememberDayInfoDialogState()
+    val subjectPickState = rememberSubjectPickState()
+
+    subjectPickState.subjectsList =
+        viewModel.getSubjects().collectAsState(initial = listOf("")).value
 
     WheelDatePick(
         state = wheelDatePickState,
         defaultDate = selectedDate,
         onDateSelected = { selectedDate = it },
     )
+    SubjectPick(state = subjectPickState)
+    DayInfoDialog(state = dayInfoDialogState)
 
     Column {
         Row {
             Button(onClick = { wheelDatePickState.show = true }) {
                 Text(text = SimpleDateFormat("d MMMM", Locale("ru")).format(selectedDate))
+            }
+            Button(onClick = { subjectPickState.show() }) {
+                Text(text = "Предмет")
             }
         }
         Column {
@@ -119,6 +135,7 @@ fun Journal() {
                 data = viewModel.studentsList,
                 displayOnlySurname = displayOnlySurname.value,
                 scrollState = hScrollState,
+                dialogState = dayInfoDialogState,
             ) {
                 studentListWidth = with(density) { it.size.width.toDp() }
             }
@@ -167,6 +184,7 @@ fun TableBody(
     data: List<JournalRowData>,
     displayOnlySurname: Boolean,
     scrollState: ScrollState,
+    dialogState: DayInfoDialogState,
     reassignStudentsListWidth: (LayoutCoordinates) -> Unit,
 ) {
     Row(
@@ -197,7 +215,12 @@ fun TableBody(
                 )
             }
         })
-        StudentStats(daysCount = daysCount, data = data, scrollState = scrollState)
+        StudentStats(
+            daysCount = daysCount,
+            data = data,
+            scrollState = scrollState,
+            dialogState = dialogState,
+        )
     }
 }
 
@@ -208,6 +231,7 @@ fun StudentStats(
     daysCount: Int,
     data: List<JournalRowData>,
     scrollState: ScrollState,
+    dialogState: DayInfoDialogState,
 ) {
     val calendar = Calendar.getInstance()
     Column {
@@ -218,7 +242,7 @@ fun StudentStats(
                         .horizontalScroll(scrollState)
                         .background(MaterialTheme.colorScheme.background),
             ) {
-                for (i in 1..<daysCount) {
+                for (i in 1..daysCount) {
                     val daysArr = student.data.filter { sd -> Date(sd.date).date == i }
                     val text =
                         if (daysArr.isEmpty()) {
@@ -237,8 +261,17 @@ fun StudentStats(
                                 i,
                             ).time,
                         studentId = student.id,
-                    ) { studentId, date ->
-                        Log.d("", "StudentStats: $studentId, ${SimpleDateFormat("MMMM dd").format(Date(date))}")
+                    ) { _, date ->
+                        dialogState.markList.clear()
+                        if (daysArr.isNotEmpty()) {
+                            daysArr[0].pairs.map {
+                                for (j in it.marks) dialogState.markList.add(j.toInt())
+                            }
+                        }
+                        dialogState.show(
+                            name = student.studentLastname + " " + student.studentName,
+                            date = date,
+                        )
                     }
                 }
             }
