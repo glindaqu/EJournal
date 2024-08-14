@@ -1,6 +1,6 @@
 package ru.glindaqu.ejournal.screens.subjects
 
-import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -22,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,18 +35,43 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.viewModel.implementation.SubjectsViewModel
 
 @Suppress("ktlint:standard:function-naming")
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddSubject(viewModel: SubjectsViewModel) {
-    var title by remember { mutableStateOf(TextFieldValue("")) }
+fun Edit(
+    title: String,
+    popUp: () -> Unit,
+) {
+    var titleState by remember { mutableStateOf(TextFieldValue(title)) }
+    val viewModel =
+        ViewModelProvider(LocalContext.current as ComponentActivity)[SubjectsViewModel::class.java]
+
+    val systemUiController = rememberSystemUiController()
+    val background = MaterialTheme.colorScheme.background
+    val onBackground = MaterialTheme.colorScheme.onBackground
+
+    LaunchedEffect(Unit) {
+        launch {
+            systemUiController.setStatusBarColor(onBackground)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            systemUiController.setStatusBarColor(background)
+        }
+    }
+
     Scaffold(topBar = {
         Row(
             modifier =
@@ -58,7 +86,7 @@ fun AddSubject(viewModel: SubjectsViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = { viewModel.uiState.value = SubjectsUIState.VIEW }) {
+            IconButton(onClick = { popUp() }) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = null,
@@ -66,34 +94,61 @@ fun AddSubject(viewModel: SubjectsViewModel) {
                     modifier = Modifier.size(30.dp),
                 )
             }
-            ExtendedFloatingActionButton(
-                onClick = {
-                    viewModel.insertSubject(title.text)
-                    viewModel.uiState.value = SubjectsUIState.VIEW
-                },
-                modifier =
-                    Modifier
-                        .padding(end = DEFAULT_HORIZONTAL_PADDING / 2)
-                        .padding(10.dp)
-                        .shadow(
-                            elevation = 7.dp,
-                            shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
-                            clip = true,
-                            ambientColor = Color.Black,
-                            spotColor = Color.Black,
-                        ).clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
-                shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
-                containerColor = MaterialTheme.colorScheme.primary,
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                IconButton(
+                    onClick = {
+                        viewModel.deleteSubject(title)
+                        popUp()
+                    },
+                    modifier =
+                        Modifier
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                                clip = true,
+                                ambientColor = Color.Black,
+                                spotColor = Color.Black,
+                            ).clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                            .background(MaterialTheme.colorScheme.primary),
                 ) {
-                    Text(text = "Сохранить", fontSize = 16.sp)
                     Icon(
-                        imageVector = Icons.Default.Check,
+                        imageVector = Icons.Default.Delete,
                         contentDescription = null,
+                        modifier = Modifier.size(30.dp),
                     )
+                }
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        viewModel.update(title, titleState.text)
+                        popUp()
+                    },
+                    modifier =
+                        Modifier
+                            .padding(end = DEFAULT_HORIZONTAL_PADDING / 2)
+                            .padding(10.dp)
+                            .shadow(
+                                elevation = 7.dp,
+                                shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                                clip = true,
+                                ambientColor = Color.Black,
+                                spotColor = Color.Black,
+                            ).clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
+                    shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(text = "Изменить", fontSize = 16.sp)
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
@@ -109,8 +164,8 @@ fun AddSubject(viewModel: SubjectsViewModel) {
             verticalArrangement = Arrangement.Center,
         ) {
             TextField(
-                value = title,
-                onValueChange = { value -> title = value },
+                value = titleState,
+                onValueChange = { value -> titleState = value },
                 placeholder = {
                     Text(
                         text = "Название премета",

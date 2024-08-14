@@ -11,11 +11,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.dataModels.BottomBarItemData
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun RowScope.BottomBarItemView(
     itemData: BottomBarItemData,
     selected: Boolean,
-    controller: NavHostController
+    controller: NavHostController,
 ) {
     NavigationBarItem(
         selected = selected,
@@ -24,8 +25,8 @@ fun RowScope.BottomBarItemView(
             Icon(
                 painter = painterResource(id = itemData.icon),
                 contentDescription = null,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
             )
-        }
+        },
     )
 }

@@ -28,4 +28,19 @@ class SubjectsViewModel(
     }
 
     override fun getAllSubject(): Flow<List<String>> = database.getPairDao().getAllTitles()
+
+    override fun deleteSubject(title: String) {
+        viewModelScope.launch {
+            database.getPairDao().delete(title)
+        }
+    }
+
+    override fun update(
+        old: String,
+        new: String,
+    ) {
+        viewModelScope.launch {
+            database.getPairDao().update(new, old)
+        }
+    }
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.viewModel.implementation.SubjectsViewModel
@@ -17,7 +18,7 @@ import ru.glindaqu.ejournal.viewModel.implementation.SubjectsViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun Subjects() {
+fun Subjects(navHostController: NavHostController) {
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[SubjectsViewModel::class.java]
 
@@ -44,6 +45,6 @@ fun Subjects() {
         SubjectsUIState.ADD -> AddSubject(viewModel = viewModel)
         SubjectsUIState.EDIT -> TODO()
         SubjectsUIState.DELETE -> TODO()
-        SubjectsUIState.VIEW -> ViewSubjects(viewModel = viewModel)
+        SubjectsUIState.VIEW -> ViewSubjects(viewModel = viewModel, navHostController = navHostController)
     }
 }

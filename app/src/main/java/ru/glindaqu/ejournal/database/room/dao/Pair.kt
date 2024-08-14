@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename")
+
 package ru.glindaqu.ejournal.database.room.dao
 
 import androidx.room.Dao
@@ -11,4 +13,13 @@ interface PairDao {
 
     @Query("INSERT INTO Pair(title, teacherId) VALUES (:title, 1)")
     suspend fun insert(title: String)
+
+    @Query("DELETE FROM Pair WHERE title = :title")
+    suspend fun delete(title: String)
+
+    @Query("UPDATE Pair SET title = :newTitle WHERE title = :oldTitle")
+    suspend fun update(
+        newTitle: String,
+        oldTitle: String,
+    )
 }

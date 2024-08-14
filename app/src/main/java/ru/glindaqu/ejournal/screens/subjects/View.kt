@@ -1,10 +1,12 @@
 package ru.glindaqu.ejournal.screens.subjects
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,14 +29,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
+import ru.glindaqu.ejournal.navigation.Route
 import ru.glindaqu.ejournal.viewModel.implementation.SubjectsViewModel
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun ViewSubjects(viewModel: SubjectsViewModel) {
+fun ViewSubjects(
+    viewModel: SubjectsViewModel,
+    navHostController: NavHostController,
+) {
     val subjects = viewModel.getAllSubject().collectAsState(initial = listOf("")).value
     Scaffold(topBar = {
         Row(
@@ -56,28 +63,32 @@ fun ViewSubjects(viewModel: SubjectsViewModel) {
                         .padding(end = DEFAULT_HORIZONTAL_PADDING / 2)
                         .padding(10.dp)
                         .shadow(
-                            elevation = 7.dp,
+                            elevation = 10.dp,
                             shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
                             clip = true,
                             ambientColor = Color.Black,
                             spotColor = Color.Black,
                         ).clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
                 shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                containerColor = MaterialTheme.colorScheme.primary,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
-    }) {
+    }) { it ->
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(5.dp),
             contentPadding = PaddingValues(5.dp),
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(it).fillMaxHeight(),
         ) {
             items(subjects) { subject ->
-                Item(text = subject)
+                Item(text = subject) {
+                    navHostController.navigate(Route.editSubject.get() + "/$subject")
+                }
             }
         }
     }
@@ -85,7 +96,10 @@ fun ViewSubjects(viewModel: SubjectsViewModel) {
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-internal fun Item(text: String) {
+internal fun Item(
+    text: String,
+    click: () -> Unit,
+) {
     Box(
         modifier =
             Modifier
@@ -102,7 +116,9 @@ internal fun Item(text: String) {
                 .padding(
                     horizontal = DEFAULT_HORIZONTAL_PADDING,
                     vertical = DEFAULT_VERTICAL_PADDING,
-                ),
+                ).clickable {
+                    click()
+                },
         contentAlignment = Alignment.Center,
     ) {
         Text(text = text, textAlign = TextAlign.Center, color = Color.Black, fontSize = 20.sp)
