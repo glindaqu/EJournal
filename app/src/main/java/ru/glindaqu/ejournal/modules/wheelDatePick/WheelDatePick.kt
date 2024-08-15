@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
@@ -21,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -35,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
@@ -102,10 +107,19 @@ fun WheelDatePick(
         calendar.set(Calendar.MONTH, month)
         calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
     }
+
+    val lazyListState = rememberLazyListState()
+
     val isConfirmEnabled by derivedStateOf {
         when {
             day > daysInMonth -> false
             else -> true
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        launch {
+            lazyListState.scrollToItem(day - 1)
         }
     }
 
@@ -136,11 +150,12 @@ fun WheelDatePick(
                     }
                 }
                 PickSectionTitle(title = "Число")
-                FlowRow(
+                LazyRow(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth(),
+                    state = lazyListState,
                 ) {
-                    for (i in 1..daysInMonth) {
+                    items((1..daysInMonth).toList()) { i ->
                         DayItem(day = i, isSelect = day == i, onClick = {
                             day = it
                         })
