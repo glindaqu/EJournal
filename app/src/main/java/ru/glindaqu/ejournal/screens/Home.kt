@@ -10,11 +10,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.modules.simpleCalendar.SimpleCalendar
 import ru.glindaqu.ejournal.ui.components.optionsList.QuickOptionsList
@@ -31,6 +34,15 @@ import ru.glindaqu.ejournal.viewModel.implementation.HomeViewModel
 fun Home() {
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[HomeViewModel::class.java]
+
+    val systemUiController = rememberSystemUiController()
+    val onBackground = MaterialTheme.colorScheme.background
+
+    LaunchedEffect(Unit) {
+        launch {
+            systemUiController.setStatusBarColor(onBackground)
+        }
+    }
 
     Column(
         modifier =

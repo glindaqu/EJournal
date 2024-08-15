@@ -1,4 +1,4 @@
-package ru.glindaqu.ejournal.screens.subjects
+package ru.glindaqu.ejournal.screens.students
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
@@ -12,14 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
-import ru.glindaqu.ejournal.viewModel.implementation.SubjectsViewModel
+import ru.glindaqu.ejournal.viewModel.implementation.StudentsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun Subjects(navHostController: NavHostController) {
+fun Students(navHostController: NavHostController) {
     val viewModel =
-        ViewModelProvider(LocalContext.current as ComponentActivity)[SubjectsViewModel::class.java]
+        ViewModelProvider(LocalContext.current as ComponentActivity)[StudentsViewModel::class.java]
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -30,14 +30,14 @@ fun Subjects(navHostController: NavHostController) {
     LaunchedEffect(Unit) {
         launch {
             systemUiController.setStatusBarColor(onBackground)
-            viewModel.uiState.value = SubjectsUIState.VIEW
+            viewModel.uiState.value = StudentsUIState.VIEW
         }
     }
 
     when (uiState) {
-        SubjectsUIState.ADD -> AddSubject(viewModel = viewModel)
-        SubjectsUIState.EDIT -> TODO()
-        SubjectsUIState.DELETE -> TODO()
-        SubjectsUIState.VIEW -> ViewSubjects(viewModel = viewModel, navHostController = navHostController)
+        StudentsUIState.ADD -> AddStudent(viewModel = viewModel)
+        StudentsUIState.EDIT -> TODO()
+        StudentsUIState.DELETE -> TODO()
+        StudentsUIState.VIEW -> ViewStudents(viewModel = viewModel, navHostController = navHostController)
     }
 }

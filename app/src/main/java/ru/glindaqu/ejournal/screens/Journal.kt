@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
 import ru.glindaqu.ejournal.dataModels.JournalRowData
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialog
@@ -84,8 +86,14 @@ fun Journal() {
         mutableStateOf(Date())
     }
 
+    val systemUiController = rememberSystemUiController()
+    val onBackground = MaterialTheme.colorScheme.background
+
     LaunchedEffect(Unit) {
-        scrollHeaderToDay(LocalDate.now().dayOfMonth - 1, offsetPx, hScrollState)
+        launch {
+            scrollHeaderToDay(LocalDate.now().dayOfMonth - 1, offsetPx, hScrollState)
+            systemUiController.setStatusBarColor(onBackground)
+        }
     }
 
     val displayOnlySurname =

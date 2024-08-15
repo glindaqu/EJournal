@@ -8,7 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.glindaqu.ejournal.screens.Home
 import ru.glindaqu.ejournal.screens.Journal
-import ru.glindaqu.ejournal.screens.subjects.Edit
+import ru.glindaqu.ejournal.screens.students.EditStudent
+import ru.glindaqu.ejournal.screens.students.Students
+import ru.glindaqu.ejournal.screens.subjects.EditSubject
 import ru.glindaqu.ejournal.screens.subjects.Subjects
 
 @Suppress("ktlint:standard:function-naming")
@@ -28,13 +30,23 @@ fun NavGraph(navHostController: NavHostController) {
         composable(Route.statistics.get()) { Home() }
         composable(Route.settings.get()) { Home() }
         composable(Route.subjects.get()) { Subjects(navHostController = navHostController) }
+        composable(Route.students.get()) { Students(navHostController = navHostController) }
         composable(
             route = Route.editSubject.get() + "/{title}",
             arguments = listOf(navArgument("title") { NavType.StringType }),
         ) {
-            Edit(
+            EditSubject(
                 title = it.arguments?.getString("title")!!,
                 popUp = { navHostController.navigate(Route.subjects.get()) },
+            )
+        }
+        composable(
+            route = Route.editStudent.get() + "/{id}",
+            arguments = listOf(navArgument("id") { NavType.StringType }),
+        ) {
+            EditStudent(
+                id = it.arguments?.getString("id")!!.toInt(),
+                popUp = { navHostController.navigate(Route.students.get()) },
             )
         }
     }

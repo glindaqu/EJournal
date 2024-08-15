@@ -25,6 +25,8 @@ data class Route(
         val settings = Route("Settings")
         val subjects = Route("Subjects")
         val editSubject = Route("EditSubject")
+        val students = Route("Students")
+        val editStudent = Route("EditStudent")
     }
 
     /**

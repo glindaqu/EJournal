@@ -24,7 +24,9 @@ fun BottomSlider(navHostController: NavHostController) {
             BottomSliderItem(
                 textSrc = R.string.bot_bar_slider_students,
                 painterSrc = R.drawable.peoples,
-            ) {}
+            ) {
+                navHostController.navigate(Route.students.get())
+            }
         }
         item {
             BottomSliderItem(
