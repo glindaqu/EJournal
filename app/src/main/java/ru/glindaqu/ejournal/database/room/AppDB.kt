@@ -34,7 +34,17 @@ abstract class AppDB : RoomDatabase() {
         private var onDatabaseCreate: Callback =
             object : Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
-                    db.execSQL("INSERT INTO Pair(title, teacherId) VALUES ('Математика', 1)")
+                    db.execSQL(
+                        "INSERT INTO Pair(title, teacherId) VALUES " +
+                            "('Математика', 1)," +
+                            "('Основы философии', 1)," +
+                            "('ОАИП', 1)," +
+                            "('Физика', 1)," +
+                            "('РПС', 1)," +
+                            "('РМП', 1)," +
+                            "('Разработка веб-приложений', 1)," +
+                            "('Теории вероятностей', 1)",
+                    )
                 }
             }
     }
