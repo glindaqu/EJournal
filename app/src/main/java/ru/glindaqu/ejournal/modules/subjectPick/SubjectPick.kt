@@ -84,6 +84,7 @@ internal fun Item(
     Card(
         modifier =
             Modifier
+                .wrapContentSize()
                 .padding(3.dp)
                 .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
                 .clickable(
@@ -98,7 +99,7 @@ internal fun Item(
         Text(
             text = text,
             color = textColor,
-            modifier = Modifier.padding(7.dp),
+            modifier = Modifier.padding(7.dp).wrapContentSize(),
             fontSize = 18.sp,
         )
     }
