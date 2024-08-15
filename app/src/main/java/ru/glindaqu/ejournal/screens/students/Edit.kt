@@ -54,7 +54,6 @@ fun EditStudent(
         ViewModelProvider(LocalContext.current as ComponentActivity)[StudentsViewModel::class.java]
 
     val systemUiController = rememberSystemUiController()
-//    val background = MaterialTheme.colorScheme.background
     val onBackground = MaterialTheme.colorScheme.onBackground
 
     var name by remember { mutableStateOf(TextFieldValue("")) }
@@ -167,17 +166,19 @@ fun EditStudent(
                     .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
         ) {
-            StudentTextField(
-                value = lastname,
-                placeholderText = "Новая фамилия студента",
-            ) { value -> lastname = value }
-            StudentTextField(value = name, placeholderText = "Новое имя студента") { value ->
-                name = value
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                StudentTextField(
+                    value = lastname,
+                    placeholderText = "Новая фамилия студента",
+                ) { value -> lastname = value }
+                StudentTextField(value = name, placeholderText = "Новое имя студента") { value ->
+                    name = value
+                }
+                StudentTextField(
+                    value = patronymic,
+                    placeholderText = "Новое отчество студента",
+                ) { value -> patronymic = value }
             }
-            StudentTextField(
-                value = patronymic,
-                placeholderText = "Новое отчество студента",
-            ) { value -> patronymic = value }
         }
     }
 }
