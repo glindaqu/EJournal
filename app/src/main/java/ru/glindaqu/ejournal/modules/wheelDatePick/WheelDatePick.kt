@@ -206,6 +206,7 @@ internal fun PickSectionTitle(title: String) {
         text = title,
         fontSize = 22.sp,
         fontWeight = FontWeight.Bold,
+        color = Color.Black,
         modifier =
             Modifier
                 .padding(7.dp)
