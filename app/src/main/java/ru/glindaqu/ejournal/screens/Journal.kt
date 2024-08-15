@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -40,10 +45,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
+import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
+import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
+import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import ru.glindaqu.ejournal.dataModels.JournalRowData
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialog
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
@@ -124,15 +133,63 @@ fun Journal() {
     DayInfoDialog(state = dayInfoDialogState)
 
     Column {
-        Row {
-            Button(onClick = { wheelDatePickState.show = true }) {
-                Text(text = SimpleDateFormat("d MMMM", Locale("ru")).format(selectedDate))
+        Row(
+            modifier =
+                Modifier.padding(
+                    horizontal = DEFAULT_HORIZONTAL_PADDING / 2,
+                    vertical = DEFAULT_VERTICAL_PADDING / 2,
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Button(
+                onClick = { wheelDatePickState.show = true },
+                shape =
+                    RoundedCornerShape(
+                        DEFAULT_CORNER_CLIP,
+                    ),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier =
+                    Modifier.shadow(
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                        clip = true,
+                        ambientColor = Color.Black,
+                        spotColor = Color.Black,
+                    ),
+            ) {
+                Text(
+                    text = SimpleDateFormat("d MMMM", Locale("ru")).format(selectedDate),
+                    fontSize = 18.sp,
+                )
             }
-            Button(onClick = { subjectPickState.show() }) {
-                Text(text = "Предмет")
+            Button(
+                onClick = { subjectPickState.show() },
+                shape =
+                    RoundedCornerShape(
+                        DEFAULT_CORNER_CLIP,
+                    ),
+                modifier =
+                    Modifier.shadow(
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                        clip = true,
+                        ambientColor = Color.Black,
+                        spotColor = Color.Black,
+                    ),
+            ) {
+                Text(text = "Предмет", fontSize = 18.sp)
             }
         }
-        Column {
+        Column(
+            modifier =
+                Modifier.clip(
+                    RoundedCornerShape(
+                        topStart = DEFAULT_CORNER_CLIP,
+                        topEnd = DEFAULT_CORNER_CLIP,
+                    ),
+                ),
+        ) {
             TableHeader(
                 daysInMonth = daysInMonth,
                 padding = studentListWidth,
