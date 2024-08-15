@@ -3,19 +3,24 @@ package ru.glindaqu.ejournal.modules.subjectPick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,7 +35,10 @@ import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 @OptIn(ExperimentalLayoutApi::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun SubjectPick(state: SubjectPickState) {
+fun SubjectPick(
+    state: SubjectPickState,
+    onSubjectSelected: (String) -> Unit,
+) {
     if (!state.isOpen()) return
     Dialog(onDismissRequest = { state.close() }) {
         Column(
@@ -62,6 +70,32 @@ fun SubjectPick(state: SubjectPickState) {
                         Item(text = element, selected = element == state.subject) {
                             state.subject = element
                         }
+                    }
+                }
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Button(
+                        onClick = {
+                            state.close()
+                            onSubjectSelected(state.subject)
+                        },
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
+                            ),
+                    ) {
+                        Text(
+                            text = "OK",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                        )
                     }
                 }
             }

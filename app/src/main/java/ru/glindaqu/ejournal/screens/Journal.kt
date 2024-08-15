@@ -91,9 +91,8 @@ fun Journal() {
     val hScrollState = rememberScrollState()
     val offsetPx = DEFAULT_TABLE_CELL_SIZE.toPx()
 
-    var selectedDate by remember {
-        mutableStateOf(Date())
-    }
+    var selectedDate by remember { mutableStateOf(Date()) }
+    var selectedSubject by remember { mutableStateOf("Предмет") }
 
     val systemUiController = rememberSystemUiController()
     val onBackground = MaterialTheme.colorScheme.background
@@ -129,7 +128,9 @@ fun Journal() {
         defaultDate = selectedDate,
         onDateSelected = { selectedDate = it },
     )
-    SubjectPick(state = subjectPickState)
+    SubjectPick(state = subjectPickState) {
+        selectedSubject = it
+    }
     DayInfoDialog(state = dayInfoDialogState)
 
     Column {
@@ -178,7 +179,7 @@ fun Journal() {
                         spotColor = Color.Black,
                     ),
             ) {
-                Text(text = "Предмет", fontSize = 18.sp)
+                Text(text = selectedSubject, fontSize = 18.sp)
             }
         }
         Column(
