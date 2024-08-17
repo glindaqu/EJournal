@@ -94,14 +94,14 @@ open class Location(
 fun WheelDatePick(
     state: WheelDatePickState,
     location: Location = Location.RU,
-    defaultDate: Date = Date(),
-    onDateSelected: (Date) -> Unit,
+    defaultDate: Long = Date().time,
+    onDateSelected: (Long) -> Unit,
 ) {
     if (!state.show) {
         return
     }
-    var month by remember { mutableIntStateOf(defaultDate.month) }
-    var day by remember { mutableIntStateOf(defaultDate.date) }
+    var month by remember { mutableIntStateOf(Date(defaultDate).month) }
+    var day by remember { mutableIntStateOf(Date(defaultDate).date) }
     val calendar = Calendar.getInstance()
     val daysInMonth by derivedStateOf {
         calendar.set(Calendar.MONTH, month)
@@ -175,7 +175,7 @@ fun WheelDatePick(
                                     calendar.get(Calendar.YEAR),
                                     month,
                                     day,
-                                ),
+                                ).time,
                             )
                             state.show = false
                         },

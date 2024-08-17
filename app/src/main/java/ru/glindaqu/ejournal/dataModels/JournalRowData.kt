@@ -31,7 +31,7 @@ data class JournalRowData(
     val studentName: String,
     val studentLastname: String,
     val studentPatronymic: String,
-    val data: Array<StudentDay>,
+    val data: List<StudentDay>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -43,7 +43,7 @@ data class JournalRowData(
         if (studentName != other.studentName) return false
         if (studentLastname != other.studentLastname) return false
         if (studentPatronymic != other.studentPatronymic) return false
-        if (!data.contentEquals(other.data)) return false
+        if (data != other.data) return false
 
         return true
     }
@@ -53,7 +53,7 @@ data class JournalRowData(
         result = 31 * result + studentName.hashCode()
         result = 31 * result + studentLastname.hashCode()
         result = 31 * result + studentPatronymic.hashCode()
-        result = 31 * result + data.contentHashCode()
+        result = 31 * result + data.hashCode()
         return result
     }
 }

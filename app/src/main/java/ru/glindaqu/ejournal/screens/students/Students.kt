@@ -24,7 +24,6 @@ fun Students(navHostController: NavHostController) {
     val uiState by viewModel.uiState.collectAsState()
 
     val systemUiController = rememberSystemUiController()
-//    val background = MaterialTheme.colorScheme.background
     val onBackground = MaterialTheme.colorScheme.onBackground
 
     LaunchedEffect(Unit) {
@@ -38,6 +37,10 @@ fun Students(navHostController: NavHostController) {
         StudentsUIState.ADD -> AddStudent(viewModel = viewModel)
         StudentsUIState.EDIT -> TODO()
         StudentsUIState.DELETE -> TODO()
-        StudentsUIState.VIEW -> ViewStudents(viewModel = viewModel, navHostController = navHostController)
+        StudentsUIState.VIEW ->
+            ViewStudents(
+                viewModel = viewModel,
+                navHostController = navHostController,
+            )
     }
 }

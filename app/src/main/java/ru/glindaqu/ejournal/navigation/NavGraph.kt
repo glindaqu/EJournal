@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.glindaqu.ejournal.screens.Home
-import ru.glindaqu.ejournal.screens.Journal
+import ru.glindaqu.ejournal.screens.journal.Journal
 import ru.glindaqu.ejournal.screens.students.EditStudent
 import ru.glindaqu.ejournal.screens.students.Students
 import ru.glindaqu.ejournal.screens.subjects.EditSubject

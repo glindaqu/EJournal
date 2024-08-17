@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import ru.glindaqu.ejournal.database.room.dao.MarkDao
 import ru.glindaqu.ejournal.database.room.dao.PairDao
 import ru.glindaqu.ejournal.database.room.dao.PeopleDao
 import ru.glindaqu.ejournal.database.room.tables.Mark
@@ -20,6 +21,8 @@ abstract class AppDB : RoomDatabase() {
     abstract fun getPairDao(): PairDao
 
     abstract fun getPeopleDao(): PeopleDao
+
+    abstract fun getMarkDao(): MarkDao
 
     companion object {
         fun getDatabase(context: Context): AppDB =
@@ -44,6 +47,22 @@ abstract class AppDB : RoomDatabase() {
                             "('РМП', 1)," +
                             "('Разработка веб-приложений', 1)," +
                             "('Теории вероятностей', 1)",
+                    )
+                    db.execSQL(
+                        "INSERT INTO People(name, lastname, patronymic, role) VALUES " +
+                            "('Дарья', 'Воробьева', 'Алексеевна', 'student')," +
+                            "('Ярослав', 'Красовский', 'Максимович', 'student')," +
+                            "('Анастасия', 'Литвинцева', 'Павловна', 'student')," +
+                            "('Яков', 'Васин', 'Валерьевич', 'student')," +
+                            "('Андрей', 'Бетенеков', 'Андреевич', 'student')," +
+                            "('Николай', 'Лубочников', 'Владимирович', 'student')," +
+                            "('Серафим', 'Ушаков', '', 'student')," +
+                            "('Полина', 'Решетова', '', 'student')," +
+                            "('Алексей', 'Никулин', '', 'student')," +
+                            "('Андрей', 'Соснов', '', 'student')," +
+                            "('Захар', 'Кремер', '', 'student')," +
+                            "('Даниил', 'Гаврильчик', '', 'student')," +
+                            "('Антон', 'Пурей', '', 'student')",
                     )
                 }
             }

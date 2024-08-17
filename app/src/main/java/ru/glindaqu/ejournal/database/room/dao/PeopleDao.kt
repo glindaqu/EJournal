@@ -13,6 +13,9 @@ interface PeopleDao {
     @Query("SELECT * FROM People WHERE role = 'student'")
     fun getAllStudents(): Flow<List<People>>
 
+    @Query("SELECT * FROM People WHERE role = 'student'")
+    suspend fun getAllStudentsAsync(): List<People>
+
     @Query("SELECT * FROM People WHERE role = 'teacher'")
     fun getAllTeachers(): Flow<List<People>>
 

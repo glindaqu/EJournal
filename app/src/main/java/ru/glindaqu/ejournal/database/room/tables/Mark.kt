@@ -9,5 +9,6 @@ data class Mark(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo val studentId: Int,
     @ColumnInfo val pairId: Int,
-    @ColumnInfo val date: Long = 0
+    @ColumnInfo val date: Long = 0,
+    @ColumnInfo val value: Int,
 )
