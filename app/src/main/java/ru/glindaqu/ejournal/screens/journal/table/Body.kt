@@ -1,5 +1,6 @@
 package ru.glindaqu.ejournal.screens.journal.table
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,34 +12,41 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
-import ru.glindaqu.ejournal.dataModels.JournalRowData
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
+import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun TableBody(
-    month: Int,
-    data: List<JournalRowData>,
     displayOnlySurname: Boolean,
     scrollState: ScrollState,
     dialogState: DayInfoDialogState,
     reassignStudentsListWidth: (LayoutCoordinates) -> Unit,
 ) {
+    val studentsList by ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
+        .getAllStudents()
+        .collectAsState(
+            initial = listOf(),
+        )
     Row(
         modifier =
             Modifier.background(MaterialTheme.colorScheme.onBackground).verticalScroll(
                 rememberScrollState(),
             ),
     ) {
-        StudentsNames(students = data, onGlobalPositioned = {
+        StudentsNames(students = studentsList, onGlobalPositioned = {
             reassignStudentsListWidth(it)
         }, item = {
             Box(
@@ -52,9 +60,9 @@ fun TableBody(
                 Text(
                     text =
                         if (displayOnlySurname) {
-                            it.studentLastname
+                            it.lastname
                         } else {
-                            "${it.studentLastname} " + "${it.studentName} " + it.studentPatronymic
+                            "${it.lastname} " + "${it.name} " + it.patronymic
                         },
                     textAlign = TextAlign.Start,
                     color = Color.Black,
@@ -64,8 +72,6 @@ fun TableBody(
             }
         })
         StudentStats(
-            data = data,
-            month = month,
             scrollState = scrollState,
             dialogState = dialogState,
         )

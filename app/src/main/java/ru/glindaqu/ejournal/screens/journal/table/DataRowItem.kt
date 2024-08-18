@@ -17,14 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
+import ru.glindaqu.ejournal.database.room.tables.Mark
+import ru.glindaqu.ejournal.database.room.tables.People
+import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun StudentsStatsItem(
-    text: String,
+    marks: List<Mark>,
     date: Long,
-    studentId: Int,
-    click: (studentId: Int, date: Long) -> Unit,
+    student: People,
+    dialogState: DayInfoDialogState,
 ) {
     Box(
         modifier =
@@ -36,12 +39,16 @@ fun StudentsStatsItem(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(color = MaterialTheme.colorScheme.background),
                 ) {
-                    click(studentId, date)
+                    dialogState.show(
+                        name = student.lastname + " " + student.name,
+                        date = date,
+                        studentId = student.id!!,
+                    )
                 },
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = text,
+            text = marks.joinToString(separator = "/") { it.value.toString() },
             textAlign = TextAlign.Center,
             color = Color.Black,
         )

@@ -6,14 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import ru.glindaqu.ejournal.dataModels.JournalRowData
+import ru.glindaqu.ejournal.database.room.tables.People
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun StudentsNames(
-    students: List<JournalRowData>,
+    students: List<People>,
     onGlobalPositioned: (size: LayoutCoordinates) -> Unit,
-    item: @Composable (JournalRowData) -> Unit,
+    item: @Composable (People) -> Unit,
 ) {
     Column(
         modifier =

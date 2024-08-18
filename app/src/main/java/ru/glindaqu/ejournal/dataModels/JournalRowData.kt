@@ -1,5 +1,7 @@
 package ru.glindaqu.ejournal.dataModels
 
+import java.util.UUID
+
 /**
  * Simple excepting data format:
  *  student 1 {
@@ -31,7 +33,7 @@ data class JournalRowData(
     val studentName: String,
     val studentLastname: String,
     val studentPatronymic: String,
-    val data: List<StudentDay>,
+    val data: MutableList<StudentDay>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -60,7 +62,7 @@ data class JournalRowData(
 
 data class StudentDay(
     val date: Long,
-    val pairs: Array<AcademicPair>,
+    val pairs: MutableList<AcademicPair>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -68,17 +70,17 @@ data class StudentDay(
 
         other as StudentDay
 
-        return pairs.contentEquals(other.pairs)
+        return pairs == other.pairs
     }
 
-    override fun hashCode(): Int = pairs.contentHashCode()
+    override fun hashCode(): Int = pairs.hashCode()
 }
 
 data class AcademicPair(
-    val uid: Long,
-    val pairInfo: AcademicPairInfo,
+    val uid: UUID,
+//    val pairInfo: AcademicPairInfo,
     val isStudentAbsence: Boolean,
-    val marks: Array<Short>,
+    val marks: MutableList<Int>,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -87,9 +89,9 @@ data class AcademicPair(
         other as AcademicPair
 
         if (uid != other.uid) return false
-        if (pairInfo != other.pairInfo) return false
+//        if (pairInfo != other.pairInfo) return false
         if (isStudentAbsence != other.isStudentAbsence) return false
-        if (!marks.contentEquals(other.marks)) return false
+        if (marks != (other.marks)) return false
 
         return true
     }
@@ -97,7 +99,7 @@ data class AcademicPair(
     override fun hashCode(): Int {
         var result = uid.hashCode()
         result = 31 * result + isStudentAbsence.hashCode()
-        result = 31 * result + marks.contentHashCode()
+        result = 31 * result + marks.hashCode()
         return result
     }
 }

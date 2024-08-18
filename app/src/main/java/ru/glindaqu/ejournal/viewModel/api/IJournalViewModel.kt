@@ -1,10 +1,8 @@
 package ru.glindaqu.ejournal.viewModel.api
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import ru.glindaqu.ejournal.database.room.tables.Pair
 
 interface IJournalViewModel {
-    fun attachContext(context: Context)
-
-    fun getSubjects(): Flow<List<String>>
+    fun getSubjects(): Flow<List<Pair>>
 }

@@ -9,8 +9,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class People(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    @ColumnInfo val name: String? = "",
-    @ColumnInfo val lastname: String? = "",
-    @ColumnInfo val patronymic: String? = "",
-    @ColumnInfo val role: String? = "",
+    @ColumnInfo val name: String = "",
+    @ColumnInfo val lastname: String = "",
+    @ColumnInfo val patronymic: String = "",
+    @ColumnInfo val role: String = "",
 )

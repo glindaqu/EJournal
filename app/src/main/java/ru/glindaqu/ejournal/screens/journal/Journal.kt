@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,6 +25,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
+import ru.glindaqu.ejournal.database.room.tables.Pair
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialog
 import ru.glindaqu.ejournal.modules.dayInfo.rememberDayInfoDialogState
 import ru.glindaqu.ejournal.modules.subjectPick.SubjectPick
@@ -47,11 +47,10 @@ import java.util.Date
 fun Journal() {
     val calendar = Calendar.getInstance()
 
-    var selectedDate by remember { mutableLongStateOf(0L) }
-    var selectedSubject by remember { mutableStateOf("Предмет") }
-    calendar.set(Calendar.DAY_OF_MONTH, Date(selectedDate).date)
-    calendar.set(Calendar.MONTH, Date(selectedDate).month)
-
+    val viewModel =
+        ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
+    val date by viewModel.selectedDate.collectAsState()
+    val subject by viewModel.pickedSubject.collectAsState()
     val density = LocalDensity.current
     var studentListWidth by remember { mutableStateOf(0.dp) }
     val hScrollState = rememberScrollState()
@@ -68,14 +67,9 @@ fun Journal() {
             }
         }
 
-    val viewModel =
-        ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
-
     val wheelDatePickState = rememberWheelDatePickState()
     val dayInfoDialogState = rememberDayInfoDialogState()
     val subjectPickState = rememberSubjectPickState()
-
-    val journalData by viewModel.studentsList.collectAsState()
 
     val coroutine = rememberCoroutineScope()
 
@@ -86,28 +80,38 @@ fun Journal() {
         }
     }
 
-    viewModel.attachContext(LocalContext.current)
     subjectPickState.subjectsList =
-        viewModel.getSubjects().collectAsState(initial = listOf("")).value
+        viewModel.getSubjects().collectAsState(initial = listOf(Pair())).value
 
     WheelDatePick(
         state = wheelDatePickState,
-        defaultDate = selectedDate,
+        defaultDate = date,
     ) {
-        selectedDate = it
+        viewModel.selectedDate.value = it
         coroutine.launch {
             scrollHeaderToDay(Date(it).date - 1, offsetPx, hScrollState)
         }
     }
-    SubjectPick(state = subjectPickState) { selectedSubject = it }
-    DayInfoDialog(state = dayInfoDialogState)
+    SubjectPick(state = subjectPickState) {
+        viewModel.pickedSubject.value = it
+    }
+    DayInfoDialog(state = dayInfoDialogState, addMark = {
+        viewModel.addMark(
+            date = dayInfoDialogState.date,
+            pairId = subject.id!!,
+            mark = it,
+            studentId = dayInfoDialogState.studentId,
+        )
+    }, deleteMark = {
+        viewModel.deleteMarkBy(it)
+    })
 
     Column {
         TopJournalBar(
             wheelDatePickState = wheelDatePickState,
             subjectPickState = subjectPickState,
-            selectedDate = selectedDate,
-            selectedSubject = selectedSubject,
+            selectedDate = date,
+            selectedSubject = subject.title,
         )
         Column(
             modifier =
@@ -124,8 +128,6 @@ fun Journal() {
                 scrollState = hScrollState,
             )
             TableBody(
-                month = Date(selectedDate).month,
-                data = journalData,
                 displayOnlySurname = displayOnlySurname.value,
                 scrollState = hScrollState,
                 dialogState = dayInfoDialogState,

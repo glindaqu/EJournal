@@ -1,5 +1,7 @@
 package ru.glindaqu.ejournal.modules.dayInfo
 
+import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,27 +19,48 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
+import ru.glindaqu.ejournal.database.room.tables.Mark
+import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun DayInfoDialog(state: DayInfoDialogState) {
+fun DayInfoDialog(
+    state: DayInfoDialogState,
+    addMark: (Int) -> Unit,
+    deleteMark: (Mark) -> Unit,
+) {
     if (!state.show) return
+    val viewModel =
+        ViewModelProvider(LocalContext.current as ComponentActivity)[JournalViewModel::class.java]
+    val marks by viewModel
+        .getAllMarksBy(
+            state.date,
+            state.studentId,
+            viewModel.pickedSubject.value.id!!,
+        ).collectAsState(
+            initial = listOf(),
+        )
     Dialog(onDismissRequest = { state.show = false }) {
         Box(
             modifier =
@@ -94,12 +117,12 @@ fun DayInfoDialog(state: DayInfoDialogState) {
                 )
 
                 Row {
-                    for (i in state.markList.indices) {
-                        MarkItemDisabled(value = state.markList[i], index = i) {
-                            state.markList.removeAt(it)
+                    for (i in marks.indices) {
+                        MarkItemDisabled(value = marks[i], index = i) {
+                            deleteMark(marks[i])
                         }
                     }
-                    if (state.markList.size == 0) {
+                    if (marks.isEmpty()) {
                         Text(
                             color = Color.Gray,
                             text = "Нет оценок...",
@@ -113,7 +136,7 @@ fun DayInfoDialog(state: DayInfoDialogState) {
                 Row {
                     for (i in 2..5) {
                         MarkItemClickable(value = i) {
-                            state.markList.add(i)
+                            addMark(i)
                         }
                     }
                 }
@@ -179,7 +202,7 @@ internal fun MarkItemClickable(
 @Suppress("ktlint:standard:function-naming")
 @Composable
 internal fun MarkItemDisabled(
-    value: Int,
+    value: Mark,
     index: Int,
     click: (Int) -> Unit,
 ) {
@@ -197,7 +220,7 @@ internal fun MarkItemDisabled(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = value.toString(),
+            text = value.value.toString(),
             fontSize = 20.sp,
             color = Color.Black,
             fontWeight = FontWeight.Bold,

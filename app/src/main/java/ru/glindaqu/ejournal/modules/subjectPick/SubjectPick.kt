@@ -31,13 +31,14 @@ import androidx.compose.ui.window.Dialog
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
+import ru.glindaqu.ejournal.database.room.tables.Pair
 
 @OptIn(ExperimentalLayoutApi::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SubjectPick(
     state: SubjectPickState,
-    onSubjectSelected: (String) -> Unit,
+    onSubjectSelected: (Pair) -> Unit,
 ) {
     if (!state.isOpen()) return
     Dialog(onDismissRequest = { state.close() }) {
@@ -67,7 +68,7 @@ fun SubjectPick(
                 FlowRow {
                     for (i in state.subjectsList.indices) {
                         val element = state.subjectsList[i]
-                        Item(text = element, selected = element == state.subject) {
+                        Item(text = element.title, selected = element == state.subject) {
                             state.subject = element
                         }
                     }
