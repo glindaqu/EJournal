@@ -10,6 +10,7 @@ import ru.glindaqu.ejournal.database.room.AppDB
 import ru.glindaqu.ejournal.database.room.tables.Mark
 import ru.glindaqu.ejournal.database.room.tables.Pair
 import ru.glindaqu.ejournal.database.room.tables.People
+import ru.glindaqu.ejournal.database.room.tables.Skip
 import ru.glindaqu.ejournal.viewModel.api.IJournalViewModel
 import java.util.Date
 
@@ -17,9 +18,10 @@ class JournalViewModel(
     app: Application,
 ) : AndroidViewModel(app),
     IJournalViewModel {
-    private var pairDao = AppDB.getDatabase(app).getPairDao()
-    private var studentsDao = AppDB.getDatabase(app).getPeopleDao()
-    private var markDao = AppDB.getDatabase(app).getMarkDao()
+    private val pairDao = AppDB.getDatabase(app).getPairDao()
+    private val studentsDao = AppDB.getDatabase(app).getPeopleDao()
+    private val markDao = AppDB.getDatabase(app).getMarkDao()
+    private val skipDao = AppDB.getDatabase(app).getSkipDao()
 
     val pickedSubject = MutableStateFlow(Pair())
     val selectedDate = MutableStateFlow(Date().time)
@@ -50,4 +52,26 @@ class JournalViewModel(
             markDao.add(studentId = studentId, pairId = pairId, date = date, value = mark)
         }
     }
+
+    fun addSkip(
+        pairId: Int,
+        date: Long,
+        studentId: Int,
+    ) {
+        viewModelScope.launch {
+            skipDao.addSkip(date, pairId, studentId)
+        }
+    }
+
+    fun deleteSkip(id: Long) {
+        viewModelScope.launch {
+            skipDao.deleteSkip(id)
+        }
+    }
+
+    fun getSkips(
+        date: Long,
+        studentId: Int,
+        pairId: Int,
+    ): Flow<List<Skip>> = skipDao.getAllSkipsBy(date, studentId, pairId)
 }

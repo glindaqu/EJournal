@@ -8,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.glindaqu.ejournal.database.room.dao.MarkDao
 import ru.glindaqu.ejournal.database.room.dao.PairDao
 import ru.glindaqu.ejournal.database.room.dao.PeopleDao
+import ru.glindaqu.ejournal.database.room.dao.SkipDao
 import ru.glindaqu.ejournal.database.room.tables.Mark
 import ru.glindaqu.ejournal.database.room.tables.Pair
 import ru.glindaqu.ejournal.database.room.tables.People
@@ -23,6 +24,8 @@ abstract class AppDB : RoomDatabase() {
     abstract fun getPeopleDao(): PeopleDao
 
     abstract fun getMarkDao(): MarkDao
+
+    abstract fun getSkipDao(): SkipDao
 
     companion object {
         fun getDatabase(context: Context): AppDB =

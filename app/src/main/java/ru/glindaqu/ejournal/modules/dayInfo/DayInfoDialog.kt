@@ -38,17 +38,20 @@ import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import ru.glindaqu.ejournal.database.room.tables.Mark
+import ru.glindaqu.ejournal.database.room.tables.Skip
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@SuppressLint("StateFlowValueCalledInComposition")
+@SuppressLint("StateFlowValueCalledInComposition", "UnrememberedMutableState")
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun DayInfoDialog(
     state: DayInfoDialogState,
     addMark: (Int) -> Unit,
     deleteMark: (Mark) -> Unit,
+    addSkip: () -> Unit,
+    deleteSkip: (Skip) -> Unit,
 ) {
     if (!state.show) return
     val viewModel =
@@ -61,6 +64,12 @@ fun DayInfoDialog(
         ).collectAsState(
             initial = listOf(),
         )
+    val skips by viewModel
+        .getSkips(state.date, state.studentId, viewModel.pickedSubject.value.id!!)
+        .collectAsState(
+            initial = listOf(),
+        )
+    state.isAbsence = skips.isNotEmpty()
     Dialog(onDismissRequest = { state.show = false }) {
         Box(
             modifier =
@@ -103,9 +112,11 @@ fun DayInfoDialog(
                 ) {
                     LabeledRadioButton(selected = !state.isAbsence, text = "Был(а)") {
                         state.isAbsence = !state.isAbsence
+                        if (skips.isNotEmpty()) deleteSkip(skips[0])
                     }
                     LabeledRadioButton(selected = state.isAbsence, text = "Не был(а)") {
                         state.isAbsence = !state.isAbsence
+                        addSkip()
                     }
                 }
 

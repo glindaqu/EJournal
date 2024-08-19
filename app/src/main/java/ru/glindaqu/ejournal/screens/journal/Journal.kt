@@ -104,6 +104,10 @@ fun Journal() {
         )
     }, deleteMark = {
         viewModel.deleteMarkBy(it)
+    }, addSkip = {
+        viewModel.addSkip(subject.id!!, dayInfoDialogState.date, dayInfoDialogState.studentId)
+    }, deleteSkip = {
+        viewModel.deleteSkip(it.uid!!)
     })
 
     Column {
