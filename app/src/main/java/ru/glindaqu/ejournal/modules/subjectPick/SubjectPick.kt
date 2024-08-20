@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -65,6 +66,9 @@ fun SubjectPick(
                         Modifier
                             .padding(7.dp)
                             .padding(top = 7.dp),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = true,
                 )
                 FlowRow {
                     for (i in state.subjectsList.indices) {
