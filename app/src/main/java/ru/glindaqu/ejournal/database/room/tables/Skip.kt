@@ -9,5 +9,6 @@ data class Skip(
     @PrimaryKey(autoGenerate = true) val uid: Long? = null,
     @ColumnInfo val pairId: Int = 0,
     @ColumnInfo val date: Long = 0,
-    @ColumnInfo val studentId: Int
+    @ColumnInfo val studentId: Int,
+    @ColumnInfo val reasonType: Int,
 )

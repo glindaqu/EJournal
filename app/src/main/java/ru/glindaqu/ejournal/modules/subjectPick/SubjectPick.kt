@@ -46,6 +46,7 @@ fun SubjectPick(
             modifier =
                 Modifier
                     .wrapContentSize()
+                    .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
                     .background(MaterialTheme.colorScheme.onBackground),
         ) {
             Column(

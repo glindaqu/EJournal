@@ -24,12 +24,13 @@ interface SkipDao {
     suspend fun deleteSkip(id: Long)
 
     @Query(
-        "INSERT INTO Skip(date, pairId, studentId) " +
-            "VALUES (:date, :pairId, :studentId)",
+        "INSERT INTO Skip(date, pairId, studentId, reasonType) " +
+            "VALUES (:date, :pairId, :studentId, :reasonType)",
     )
     suspend fun addSkip(
         date: Long,
         pairId: Int,
         studentId: Int,
+        reasonType: Int,
     )
 }

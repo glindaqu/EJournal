@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import ru.glindaqu.ejournal.screens.journal.Appointment
 
 class DayInfoDialogState internal constructor() {
     var show by mutableStateOf(false)
-    var isAbsence by mutableStateOf(false)
+    var appointment by mutableStateOf(Appointment.HERE)
 
     var studentName by mutableStateOf("")
     var studentId by mutableIntStateOf(0)

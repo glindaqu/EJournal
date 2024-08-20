@@ -50,7 +50,7 @@ fun DayInfoDialog(
     state: DayInfoDialogState,
     addMark: (Int) -> Unit,
     deleteMark: (Mark) -> Unit,
-    addSkip: () -> Unit,
+    addSkip: (Int) -> Unit,
     deleteSkip: (Skip) -> Unit,
 ) {
     if (!state.show) return
@@ -69,7 +69,6 @@ fun DayInfoDialog(
         .collectAsState(
             initial = listOf(),
         )
-    state.isAbsence = skips.isNotEmpty()
     Dialog(onDismissRequest = { state.show = false }) {
         Box(
             modifier =
@@ -106,27 +105,49 @@ fun DayInfoDialog(
                             .background(Color.Black)
                             .alpha(0.2f),
                 )
-                Row(
+                Text(
+                    text = "Посещаемость",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                )
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
-                    LabeledRadioButton(selected = !state.isAbsence, text = "Был(а)") {
-                        state.isAbsence = !state.isAbsence
-                        if (skips.isNotEmpty()) deleteSkip(skips[0])
+                    Row {
+                        skips.forEach { skip ->
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .wrapContentSize()
+                                        .padding(10.dp)
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .clickable {
+                                            deleteSkip(skip)
+                                        },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(text = if (skip.reasonType == 0) "н/б" else "ув")
+                            }
+                        }
                     }
-                    LabeledRadioButton(selected = state.isAbsence, text = "Не был(а)") {
-                        state.isAbsence = !state.isAbsence
-                        addSkip()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Button(onClick = { addSkip(0) }) {
+                            Text(text = "Не был(а)")
+                        }
+                        Button(onClick = { addSkip(1) }) {
+                            Text(text = "Не был(а), уважительная")
+                        }
                     }
                 }
-
                 Text(
                     text = "Оценки",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
                 )
-
                 Row {
                     for (i in marks.indices) {
                         MarkItemDisabled(value = marks[i], index = i) {
@@ -171,8 +192,8 @@ fun DayInfoDialog(
 @Suppress("ktlint:standard:function-naming")
 @Composable
 internal fun LabeledRadioButton(
+    buttonText: String,
     selected: Boolean,
-    text: String,
     click: () -> Unit,
 ) {
     val bg =
@@ -185,7 +206,12 @@ internal fun LabeledRadioButton(
                 .background(bg)
                 .clickable { click() },
     ) {
-        Text(text = text, color = textColor, fontSize = 18.sp, modifier = Modifier.padding(10.dp))
+        Text(
+            text = buttonText,
+            color = textColor,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(10.dp),
+        )
     }
 }
 

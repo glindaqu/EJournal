@@ -23,7 +23,7 @@ class JournalViewModel(
     private val markDao = AppDB.getDatabase(app).getMarkDao()
     private val skipDao = AppDB.getDatabase(app).getSkipDao()
 
-    val pickedSubject = MutableStateFlow(Pair())
+    val pickedSubject = MutableStateFlow(Pair(null, "Предмет"))
     val selectedDate = MutableStateFlow(Date().time)
 
     fun getAllStudents(): Flow<List<People>> = studentsDao.getAllStudents()
@@ -57,9 +57,10 @@ class JournalViewModel(
         pairId: Int,
         date: Long,
         studentId: Int,
+        reasonType: Int,
     ) {
         viewModelScope.launch {
-            skipDao.addSkip(date, pairId, studentId)
+            skipDao.addSkip(date, pairId, studentId, reasonType)
         }
     }
 

@@ -14,6 +14,7 @@ private val MainPalette =
         onBackground = Color.White,
         errorContainer = Color(0xFFFF9595),
         error = Color(0xFFBB7F81),
+        tertiary = Color(0x1A000000),
     )
 
 @Suppress("ktlint:standard:function-naming")

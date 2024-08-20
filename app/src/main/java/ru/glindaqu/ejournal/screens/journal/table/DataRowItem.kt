@@ -20,6 +20,7 @@ import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
 import ru.glindaqu.ejournal.database.room.tables.Mark
 import ru.glindaqu.ejournal.database.room.tables.People
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
+import java.util.Date
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -29,12 +30,19 @@ fun StudentsStatsItem(
     student: People,
     dialogState: DayInfoDialogState,
 ) {
+    val weekDay = Date(date).day
+    val background =
+        if (weekDay == 0 || weekDay == 1) {
+            MaterialTheme.colorScheme.tertiary
+        } else {
+            MaterialTheme.colorScheme.onBackground
+        }
     Box(
         modifier =
             Modifier
                 .padding(top = 1.dp, end = 1.dp)
                 .size(DEFAULT_TABLE_CELL_SIZE - 2.dp)
-                .background(MaterialTheme.colorScheme.onBackground)
+                .background(background)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(color = MaterialTheme.colorScheme.background),

@@ -74,4 +74,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation("com.airbnb.android:lottie-compose:6.5.0")
 }
