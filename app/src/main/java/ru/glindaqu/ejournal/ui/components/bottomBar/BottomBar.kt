@@ -20,6 +20,7 @@ import ru.glindaqu.ejournal.ui.components.bottomSlider.BottomSlider
 fun BottomBar(
     destinations: List<BottomBarItemData>,
     controller: NavHostController,
+    selected: String,
 ) {
     Column(
         modifier =
@@ -43,7 +44,7 @@ fun BottomBar(
             destinations.forEach { el ->
                 BottomBarItemView(
                     itemData = el,
-                    selected = false,
+                    selected = el.destination.lowercase() == selected.lowercase(),
                     controller = controller,
                 )
             }

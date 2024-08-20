@@ -20,17 +20,36 @@ import ru.glindaqu.ejournal.screens.subjects.Subjects
  * @author glindaqu
  */
 @Composable
-fun NavGraph(navHostController: NavHostController) {
+fun NavGraph(
+    navHostController: NavHostController,
+    onDestinationChanged: (String) -> Unit,
+) {
     NavHost(
         navController = navHostController,
         startDestination = Route.journal.get(),
     ) {
-        composable(Route.home.get()) { Home() }
-        composable(Route.journal.get()) { Journal() }
-        composable(Route.statistics.get()) { Home() }
-        composable(Route.settings.get()) { Home() }
-        composable(Route.subjects.get()) { Subjects(navHostController = navHostController) }
-        composable(Route.students.get()) { Students(navHostController = navHostController) }
+        composable(Route.home.get()) {
+            Home()
+            onDestinationChanged(Route.home.get())
+        }
+        composable(Route.journal.get()) {
+            Journal()
+            onDestinationChanged(Route.journal.get())
+        }
+        composable(Route.statistics.get()) {
+            Home()
+            onDestinationChanged(Route.statistics.get())
+        }
+        composable(Route.settings.get()) {
+            Home()
+            onDestinationChanged(Route.settings.get())
+        }
+        composable(Route.subjects.get()) {
+            Subjects(navHostController = navHostController)
+        }
+        composable(Route.students.get()) {
+            Students(navHostController = navHostController)
+        }
         composable(
             route = Route.editSubject.get() + "/{title}",
             arguments = listOf(navArgument("title") { NavType.StringType }),

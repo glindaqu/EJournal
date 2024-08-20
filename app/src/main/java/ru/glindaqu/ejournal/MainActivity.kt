@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import ru.glindaqu.ejournal.navigation.NavGraph
@@ -24,6 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navHostController = rememberNavController()
+            var selectedDestination by remember { mutableStateOf("") }
             EJournalTheme {
                 val routes = RoutesDao()
                 Scaffold(
@@ -31,6 +36,7 @@ class MainActivity : ComponentActivity() {
                         BottomBar(
                             destinations = routes.destinations,
                             controller = navHostController,
+                            selected = selectedDestination,
                         )
                     },
                 ) {
@@ -41,7 +47,12 @@ class MainActivity : ComponentActivity() {
                                 .padding(it),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        NavGraph(navHostController = navHostController)
+                        NavGraph(
+                            navHostController = navHostController,
+                            onDestinationChanged = { destination ->
+                                selectedDestination = destination
+                            },
+                        )
                     }
                 }
             }
