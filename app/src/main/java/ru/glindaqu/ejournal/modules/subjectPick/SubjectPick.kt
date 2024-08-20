@@ -1,5 +1,6 @@
 package ru.glindaqu.ejournal.modules.subjectPick
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,6 +20,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +37,7 @@ import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import ru.glindaqu.ejournal.database.room.tables.Pair
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalLayoutApi::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -42,6 +46,8 @@ fun SubjectPick(
     onSubjectSelected: (Pair) -> Unit,
 ) {
     if (!state.isOpen()) return
+    val isOKBtnEnable by derivedStateOf { state.subject.id != null }
+    val textColor = if (isOKBtnEnable) MaterialTheme.colorScheme.primary else Color.White
     Dialog(onDismissRequest = { state.close() }) {
         Column(
             modifier =
@@ -95,11 +101,12 @@ fun SubjectPick(
                                 containerColor = MaterialTheme.colorScheme.onBackground,
                                 disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
                             ),
+                        enabled = isOKBtnEnable,
                     ) {
                         Text(
                             text = "OK",
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textColor,
                             fontWeight = FontWeight.Bold,
                         )
                     }
