@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.glindaqu.ejournal.screens.Home
 import ru.glindaqu.ejournal.screens.journal.Journal
+import ru.glindaqu.ejournal.screens.statistics.Statistics
 import ru.glindaqu.ejournal.screens.students.EditStudent
 import ru.glindaqu.ejournal.screens.students.Students
 import ru.glindaqu.ejournal.screens.subjects.EditSubject
@@ -26,7 +27,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Route.journal.get(),
+        startDestination = Route.statistics.get(),
     ) {
         composable(Route.home.get()) {
             Home()
@@ -37,7 +38,7 @@ fun NavGraph(
             onDestinationChanged(Route.journal.get())
         }
         composable(Route.statistics.get()) {
-            Home()
+            Statistics()
             onDestinationChanged(Route.statistics.get())
         }
         composable(Route.settings.get()) {

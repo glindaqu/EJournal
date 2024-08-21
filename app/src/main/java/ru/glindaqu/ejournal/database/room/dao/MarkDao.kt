@@ -30,4 +30,10 @@ interface MarkDao {
         date: Long,
         value: Int,
     )
+
+    @Query("SELECT * FROM Mark WHERE date BETWEEN :start AND :end")
+    fun getAllMarksByRange(
+        start: Long,
+        end: Long,
+    ): Flow<List<Mark>>
 }

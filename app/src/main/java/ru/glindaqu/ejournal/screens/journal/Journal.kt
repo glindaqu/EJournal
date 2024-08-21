@@ -95,20 +95,31 @@ fun Journal() {
     SubjectPick(state = subjectPickState) {
         viewModel.pickedSubject.value = it
     }
-    DayInfoDialog(state = dayInfoDialogState, addMark = {
-        viewModel.addMark(
-            date = dayInfoDialogState.date,
-            pairId = subject.id!!,
-            mark = it,
-            studentId = dayInfoDialogState.studentId,
-        )
-    }, deleteMark = {
-        viewModel.deleteMarkBy(it)
-    }, addSkip = {
-        viewModel.addSkip(subject.id!!, dayInfoDialogState.date, dayInfoDialogState.studentId, it)
-    }, deleteSkip = {
-        viewModel.deleteSkip(it.uid!!)
-    })
+    DayInfoDialog(
+        state = dayInfoDialogState,
+        addMark = {
+            viewModel.addMark(
+                date = dayInfoDialogState.date,
+                pairId = subject.id!!,
+                mark = it,
+                studentId = dayInfoDialogState.studentId,
+            )
+        },
+        deleteMark = {
+            viewModel.deleteMarkBy(it)
+        },
+        addSkip = {
+            viewModel.addSkip(
+                subject.id!!,
+                dayInfoDialogState.date,
+                dayInfoDialogState.studentId,
+                it,
+            )
+        },
+        deleteSkip = {
+            viewModel.deleteSkip(it.uid!!)
+        },
+    )
 
     Column {
         TopJournalBar(

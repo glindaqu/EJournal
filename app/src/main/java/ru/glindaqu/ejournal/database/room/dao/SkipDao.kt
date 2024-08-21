@@ -33,4 +33,10 @@ interface SkipDao {
         studentId: Int,
         reasonType: Int,
     )
+
+    @Query("SELECT * FROM Skip WHERE date BETWEEN :start AND :end")
+    fun getAllSkipsByRange(
+        start: Long,
+        end: Long,
+    ): Flow<List<Skip>>
 }

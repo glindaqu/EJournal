@@ -11,4 +11,11 @@ data class Skip(
     @ColumnInfo val date: Long = 0,
     @ColumnInfo val studentId: Int,
     @ColumnInfo val reasonType: Int,
-)
+) {
+    override fun toString(): String =
+        when (this.reasonType) {
+            0 -> "н/б"
+            1 -> "ув"
+            else -> ""
+        }
+}
