@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
 import ru.glindaqu.ejournal.database.room.tables.People
+import ru.glindaqu.ejournal.database.room.tables.PeopleKReturnTypes
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 
@@ -120,6 +122,7 @@ internal fun TableBodyContent(
     Row(
         modifier =
             Modifier
+                .fillMaxHeight()
                 .background(MaterialTheme.colorScheme.onBackground)
                 .verticalScroll(
                     rememberScrollState(),
@@ -139,11 +142,13 @@ internal fun TableBodyContent(
                 ) {
                     Text(
                         text =
-                            if (displayOnlySurname) {
-                                it.lastname
-                            } else {
-                                "${it.lastname} " + "${it.name} " + it.patronymic
-                            },
+                            it.get(
+                                if (displayOnlySurname) {
+                                    PeopleKReturnTypes.LASTNAME
+                                } else {
+                                    PeopleKReturnTypes.FULL_NAME
+                                },
+                            ),
                         textAlign = TextAlign.Start,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
