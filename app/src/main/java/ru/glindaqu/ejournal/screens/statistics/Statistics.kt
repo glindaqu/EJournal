@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -60,16 +60,21 @@ enum class StatUIState {
     READY,
 }
 
-fun Modifier.vertical() =
-    layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        layout(placeable.height, placeable.width) {
-            placeable.place(
-                x = -(placeable.width / 2 - placeable.height / 2),
-                y = -(placeable.height / 2 - placeable.width / 2),
-            )
+fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
+    val rotate = rotate(if (clockwise) 90f else -90f)
+
+    val adjustBounds =
+        layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            layout(placeable.height, placeable.width) {
+                placeable.place(
+                    x = -(placeable.width / 2 - placeable.height / 2),
+                    y = -(placeable.height / 2 - placeable.width / 2),
+                )
+            }
         }
-    }
+    return rotate then adjustBounds
+}
 
 @SuppressLint("UnrememberedMutableState")
 @Suppress("ktlint:standard:function-naming")
@@ -155,7 +160,7 @@ private fun Body(
                         subjects.forEach { subject ->
                             Box(
                                 contentAlignment = Alignment.Center,
-                                modifier = Modifier.size(DEFAULT_TABLE_CELL_SIZE + 10.dp),
+                                modifier = Modifier.size(DEFAULT_TABLE_CELL_SIZE),
                             ) {
                                 Text(
                                     text =
@@ -171,7 +176,7 @@ private fun Body(
                                     modifier = Modifier,
                                     textAlign = TextAlign.Center,
                                     color = Color.Black,
-                                    fontSize = 18.sp,
+                                    fontSize = 16.sp,
                                 )
                             }
                         }
@@ -205,23 +210,20 @@ fun StatisticTableHeader(
     ) {
         subjects.forEach {
             Box(
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier.rotateVertically(false).height(DEFAULT_TABLE_CELL_SIZE),
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Text(
                     text = it.title,
                     color = Color.Black,
                     modifier =
                         Modifier
-                            .vertical()
-                            .height(DEFAULT_TABLE_CELL_SIZE + 10.dp)
-                            .rotate(-90f)
-                            .padding(20.dp)
-                            .height(20.dp),
+                            .widthIn(max = 150.dp)
+                            .padding(start = 10.dp),
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
                     fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
                 )
             }
         }
@@ -235,7 +237,7 @@ internal fun StatisticsNameRow(student: People) {
         contentAlignment = Alignment.Center,
         modifier =
             Modifier
-                .height(DEFAULT_TABLE_CELL_SIZE + 10.dp)
+                .height(DEFAULT_TABLE_CELL_SIZE)
                 .background(MaterialTheme.colorScheme.onBackground),
     ) {
         Text(
