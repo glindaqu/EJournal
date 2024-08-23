@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -46,16 +49,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
+import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
+import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import ru.glindaqu.ejournal.database.room.tables.Mark
 import ru.glindaqu.ejournal.database.room.tables.Pair
 import ru.glindaqu.ejournal.database.room.tables.People
 import ru.glindaqu.ejournal.database.room.tables.PeopleKReturnTypes
 import ru.glindaqu.ejournal.database.room.tables.Skip
+import ru.glindaqu.ejournal.modules.dateRangePicker.DateRangePicker
+import ru.glindaqu.ejournal.modules.dateRangePicker.rememberDateRangePickerState
 import ru.glindaqu.ejournal.screens.journal.table.Loading
 import ru.glindaqu.ejournal.viewModel.implementation.StatisticsViewModel
-import java.util.Calendar
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 enum class StatUIState {
     LOADING,
@@ -82,23 +90,14 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun Statistics() {
-    val calendar = Calendar.getInstance()
-    val dateStart by remember {
+    var dateStart by remember {
         mutableStateOf(
-            Date(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.getActualMinimum(Calendar.DAY_OF_MONTH),
-            ),
+            Date(),
         )
     }
-    val dateEnd by remember {
+    var dateEnd by remember {
         mutableStateOf(
-            Date(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.getActualMaximum(Calendar.DAY_OF_MONTH),
-            ),
+            Date(),
         )
     }
 
@@ -128,10 +127,15 @@ fun Statistics() {
                 students = students,
                 marks = marks,
                 skips = skips,
+                onDateSelected = { s, e ->
+                    dateEnd = e
+                    dateStart = s
+                },
             )
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 @Suppress("ktlint:standard:function-naming")
 @Composable
 private fun Body(
@@ -139,72 +143,130 @@ private fun Body(
     students: List<People>,
     marks: List<Mark>,
     skips: List<Skip>,
+    onDateSelected: (Date, Date) -> Unit,
 ) {
     var legendSize by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
-    Column(
-        modifier =
-            Modifier
-                .horizontalScroll(rememberScrollState())
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.onBackground),
-    ) {
-        StatisticTableHeader(subjects = subjects, startPadding = legendSize)
-        Row {
-            LazyColumn(
+    val dateRangePickerState = rememberDateRangePickerState()
+
+    var labelText by remember { mutableStateOf(SimpleDateFormat("dd MMMM", Locale("ru")).format(Date())) }
+
+    DateRangePicker(state = dateRangePickerState, onDateSelected = { s, e ->
+        onDateSelected(s, e)
+        labelText =
+            "${SimpleDateFormat("dd MMMM", Locale("ru")).format(s)} - ${SimpleDateFormat("dd MMMM", Locale("ru")).format(e)}"
+    })
+
+    Column {
+        Row(
+            modifier =
+                Modifier
+                    .padding(
+                        horizontal = DEFAULT_HORIZONTAL_PADDING / 2,
+                        vertical = DEFAULT_VERTICAL_PADDING / 2,
+                    ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Button(
+                onClick = { dateRangePickerState.show() },
+                shape =
+                    RoundedCornerShape(
+                        DEFAULT_CORNER_CLIP,
+                    ),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier =
-                    Modifier
-                        .onGloballyPositioned {
-                            legendSize = with(density) { it.size.width.toDp() }
-                        }.background(MaterialTheme.colorScheme.onBackground),
-                contentPadding = PaddingValues(1.dp),
+                    Modifier.shadow(
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                        clip = true,
+                        ambientColor = Color.Black,
+                        spotColor = Color.Black,
+                    ),
             ) {
-                items(students) {
-                    StatisticsNameRow(student = it)
-                }
+                Text(
+                    text = labelText,
+                    fontSize = 18.sp,
+                )
             }
-            Column(
-                horizontalAlignment = Alignment.End,
-            ) {
+        }
+        Column(
+            modifier =
+                Modifier
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = DEFAULT_CORNER_CLIP,
+                            topEnd = DEFAULT_CORNER_CLIP,
+                        ),
+                    ).horizontalScroll(rememberScrollState())
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.onBackground),
+        ) {
+            StatisticTableHeader(subjects = subjects, startPadding = legendSize)
+            Row {
                 LazyColumn(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                    contentPadding = PaddingValues(top = 1.dp, start = 1.dp, bottom = 2.dp),
+                    modifier =
+                        Modifier
+                            .onGloballyPositioned {
+                                legendSize = with(density) { it.size.width.toDp() }
+                            }.background(MaterialTheme.colorScheme.onBackground),
+                    contentPadding = PaddingValues(1.dp),
+                ) {
+                    items(students) {
+                        StatisticsNameRow(student = it)
+                    }
+                }
+                Column(
                     horizontalAlignment = Alignment.End,
                 ) {
-                    items(students) { student ->
-                        Row {
-                            val studentSkips = skips.filter { it.studentId == student.id!! }
-                            subjects.forEach { subject ->
-                                val studentMarks =
-                                    marks.filter { it.studentId == student.id!! && it.pairId == subject.id!! }
-                                val marksValues = studentMarks.map { it.value }
-                                val average = marksValues.average()
-                                TableCell(
-                                    text =
-                                        if (!average.isNaN()) {
-                                            String.format(
-                                                "%.2f",
-                                                average,
-                                            )
-                                        } else {
-                                            ""
-                                        },
-                                )
+                    LazyColumn(
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+                        contentPadding = PaddingValues(top = 1.dp, start = 1.dp, bottom = 2.dp),
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        items(students) { student ->
+                            Row {
+                                val studentSkips = skips.filter { it.studentId == student.id!! }
+                                subjects.forEach { subject ->
+                                    val studentMarks =
+                                        marks.filter { it.studentId == student.id!! && it.pairId == subject.id!! }
+                                    val marksValues = studentMarks.map { it.value }
+                                    val average = marksValues.average()
+                                    TableCell(
+                                        text =
+                                            if (!average.isNaN()) {
+                                                String.format(
+                                                    "%.2f",
+                                                    average,
+                                                )
+                                            } else {
+                                                ""
+                                            },
+                                    )
+                                }
+                                TableCell(text = (studentSkips.count { it.reasonType == 1 } * 2).toString())
+                                TableCell(text = (studentSkips.count { it.reasonType == 0 } * 2).toString())
+                                TableCell(text = (studentSkips.count() * 2).toString())
                             }
-                            TableCell(text = (studentSkips.count { it.reasonType == 1 } * 2).toString())
-                            TableCell(text = (studentSkips.count { it.reasonType == 0 } * 2).toString())
-                            TableCell(text = (studentSkips.count() * 2).toString())
                         }
                     }
-                }
-                Row {
-                    Box(modifier = Modifier.height(DEFAULT_TABLE_CELL_SIZE), contentAlignment = Alignment.Center) {
-                        Text(text = "Итого", fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
-                    }
                     Row {
-                        TableCell(text = (skips.count { it.reasonType == 1 } * 2).toString())
-                        TableCell(text = (skips.count { it.reasonType == 0 } * 2).toString())
-                        TableCell(text = (skips.count() * 2).toString())
+                        Box(
+                            modifier = Modifier.height(DEFAULT_TABLE_CELL_SIZE),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "Итого",
+                                fontSize = 18.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Row {
+                            TableCell(text = (skips.count { it.reasonType == 1 } * 2).toString())
+                            TableCell(text = (skips.count { it.reasonType == 0 } * 2).toString())
+                            TableCell(text = (skips.count() * 2).toString())
+                        }
                     }
                 }
             }
