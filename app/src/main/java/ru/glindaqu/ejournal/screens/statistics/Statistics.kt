@@ -7,7 +7,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -140,7 +142,13 @@ private fun Body(
 ) {
     var legendSize by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
-    Column(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+    Column(
+        modifier =
+            Modifier
+                .horizontalScroll(rememberScrollState())
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.onBackground),
+    ) {
         StatisticTableHeader(subjects = subjects, startPadding = legendSize)
         Row {
             LazyColumn(
@@ -149,41 +157,79 @@ private fun Body(
                         .onGloballyPositioned {
                             legendSize = with(density) { it.size.width.toDp() }
                         }.background(MaterialTheme.colorScheme.onBackground),
+                contentPadding = PaddingValues(1.dp),
             ) {
                 items(students) {
                     StatisticsNameRow(student = it)
                 }
             }
-            LazyColumn {
-                items(students) { student ->
-                    Row {
-                        subjects.forEach { subject ->
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.size(DEFAULT_TABLE_CELL_SIZE),
-                            ) {
-                                Text(
+            Column(
+                horizontalAlignment = Alignment.End,
+            ) {
+                LazyColumn(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background),
+                    contentPadding = PaddingValues(top = 1.dp, start = 1.dp, bottom = 2.dp),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    items(students) { student ->
+                        Row {
+                            val studentSkips = skips.filter { it.studentId == student.id!! }
+                            subjects.forEach { subject ->
+                                val studentMarks =
+                                    marks.filter { it.studentId == student.id!! && it.pairId == subject.id!! }
+                                val marksValues = studentMarks.map { it.value }
+                                val average = marksValues.average()
+                                TableCell(
                                     text =
-                                        String.format(
-                                            "%.2f",
-                                            marks
-                                                .filter {
-                                                    it.studentId == student.id!! &&
-                                                        it.pairId == subject.id!!
-                                                }.map { it.value }
-                                                .average(),
-                                        ),
-                                    modifier = Modifier,
-                                    textAlign = TextAlign.Center,
-                                    color = Color.Black,
-                                    fontSize = 16.sp,
+                                        if (!average.isNaN()) {
+                                            String.format(
+                                                "%.2f",
+                                                average,
+                                            )
+                                        } else {
+                                            ""
+                                        },
                                 )
                             }
+                            TableCell(text = (studentSkips.count { it.reasonType == 1 } * 2).toString())
+                            TableCell(text = (studentSkips.count { it.reasonType == 0 } * 2).toString())
+                            TableCell(text = (studentSkips.count() * 2).toString())
                         }
+                    }
+                }
+                Row {
+                    Box(modifier = Modifier.height(DEFAULT_TABLE_CELL_SIZE), contentAlignment = Alignment.Center) {
+                        Text(text = "Итого", fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                    Row {
+                        TableCell(text = (skips.count { it.reasonType == 1 } * 2).toString())
+                        TableCell(text = (skips.count { it.reasonType == 0 } * 2).toString())
+                        TableCell(text = (skips.count() * 2).toString())
                     }
                 }
             }
         }
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+private fun TableCell(text: String) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier =
+            Modifier
+                .size(DEFAULT_TABLE_CELL_SIZE)
+                .padding(top = 1.dp, start = 1.dp)
+                .background(MaterialTheme.colorScheme.onBackground),
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+            fontSize = 16.sp,
+        )
     }
 }
 
@@ -209,24 +255,36 @@ fun StatisticTableHeader(
         verticalAlignment = Alignment.Bottom,
     ) {
         subjects.forEach {
-            Box(
-                modifier = Modifier.rotateVertically(false).height(DEFAULT_TABLE_CELL_SIZE),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                Text(
-                    text = it.title,
-                    color = Color.Black,
-                    modifier =
-                        Modifier
-                            .widthIn(max = 150.dp)
-                            .padding(start = 10.dp),
-                    softWrap = true,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2,
-                    fontSize = 16.sp,
-                )
-            }
+            HeaderTextedItem(text = it.title)
         }
+        listOf("По уважительной", "Не по уважительной", "Всего").forEach {
+            HeaderTextedItem(text = it)
+        }
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+private fun HeaderTextedItem(text: String) {
+    Box(
+        modifier =
+            Modifier
+                .rotateVertically(false)
+                .height(DEFAULT_TABLE_CELL_SIZE),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        Text(
+            text = text,
+            color = Color.Black,
+            modifier =
+                Modifier
+                    .widthIn(max = 150.dp)
+                    .padding(horizontal = 10.dp),
+            softWrap = true,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 2,
+            fontSize = 16.sp,
+        )
     }
 }
 
