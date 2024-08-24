@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.glindaqu.ejournal.screens.Home
 import ru.glindaqu.ejournal.screens.journal.Journal
+import ru.glindaqu.ejournal.screens.settings.Settings
 import ru.glindaqu.ejournal.screens.statistics.Statistics
 import ru.glindaqu.ejournal.screens.students.EditStudent
 import ru.glindaqu.ejournal.screens.students.Students
@@ -42,7 +43,7 @@ fun NavGraph(
             onDestinationChanged(Route.statistics.get())
         }
         composable(Route.settings.get()) {
-            Home()
+            Settings()
             onDestinationChanged(Route.settings.get())
         }
         composable(Route.subjects.get()) {

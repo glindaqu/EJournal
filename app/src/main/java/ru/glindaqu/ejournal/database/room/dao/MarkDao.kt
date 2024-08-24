@@ -36,4 +36,7 @@ interface MarkDao {
         start: Long,
         end: Long,
     ): Flow<List<Mark>>
+
+    @Query("DELETE FROM Mark")
+    suspend fun deleteAll()
 }

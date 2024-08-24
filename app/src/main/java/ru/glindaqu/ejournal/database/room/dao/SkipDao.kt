@@ -39,4 +39,7 @@ interface SkipDao {
         start: Long,
         end: Long,
     ): Flow<List<Skip>>
+
+    @Query("DELETE FROM Skip")
+    suspend fun deleteAll()
 }
