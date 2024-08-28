@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,10 @@ fun Settings() {
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[SettingsViewModel::class.java]
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(vertical = DEFAULT_VERTICAL_PADDING),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -53,18 +58,34 @@ private fun SettingsItem(
         elevation = CardDefaults.cardElevation(DEFAULT_CARD_ELEVATION),
         shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
         modifier =
-            Modifier.clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)).clickable {
-                onClick()
-            },
+            Modifier
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                .fillMaxWidth()
+                .padding(horizontal = DEFAULT_HORIZONTAL_PADDING)
+                .shadow(
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                    clip = true,
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black,
+                ).clip(
+                    RoundedCornerShape(
+                        DEFAULT_CORNER_CLIP,
+                    ),
+                ).clickable {
+                    onClick()
+                },
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = label,
                 modifier =
-                    Modifier.wrapContentSize().padding(
-                        horizontal = DEFAULT_HORIZONTAL_PADDING,
-                        vertical = DEFAULT_VERTICAL_PADDING,
-                    ),
+                    Modifier
+                        .wrapContentSize()
+                        .padding(
+                            horizontal = DEFAULT_HORIZONTAL_PADDING,
+                            vertical = DEFAULT_VERTICAL_PADDING,
+                        ),
                 color = Color.Black,
             )
         }

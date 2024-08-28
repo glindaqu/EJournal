@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -114,31 +116,55 @@ fun DayInfoDialog(
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Row {
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                         skips.forEach { skip ->
                             Box(
                                 modifier =
                                     Modifier
                                         .wrapContentSize()
-                                        .padding(10.dp)
-                                        .background(MaterialTheme.colorScheme.primary)
+                                        .padding(2.dp)
+                                        .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                                        .background(MaterialTheme.colorScheme.background)
                                         .clickable {
                                             deleteSkip(skip)
-                                        },
+                                        }.padding(10.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text(text = if (skip.reasonType == 0) "н/б" else "ув")
+                                Text(
+                                    text = if (skip.reasonType == 0) "н/б" else "ув",
+                                    fontSize = 20.sp,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                )
                             }
                         }
                     }
+                    if (skips.isEmpty()) {
+                        Text(
+                            color = Color.Gray,
+                            text = "Нет пропусков...",
+                            fontSize = 20.sp,
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier.alpha(0.7f),
+                        )
+                    }
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                     ) {
-                        Button(onClick = { addSkip(0) }) {
-                            Text(text = "Не был(а)")
+                        Button(
+                            onClick = { addSkip(0) },
+                            shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                        ) {
+                            Text(text = "Не был(а)", fontSize = 15.sp)
                         }
-                        Button(onClick = { addSkip(1) }) {
-                            Text(text = "Не был(а), уважительная")
+                        Button(
+                            onClick = { addSkip(1) },
+                            shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
+                        ) {
+                            Text(text = "Не был(а), уважительная", fontSize = 15.sp)
                         }
                     }
                 }
@@ -147,8 +173,9 @@ fun DayInfoDialog(
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
+                    modifier = Modifier.padding(top = 10.dp),
                 )
-                Row {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                     for (i in marks.indices) {
                         MarkItemDisabled(value = marks[i], index = i) {
                             deleteMark(marks[i])
@@ -186,32 +213,6 @@ fun DayInfoDialog(
                 }
             }
         }
-    }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Composable
-internal fun LabeledRadioButton(
-    buttonText: String,
-    selected: Boolean,
-    click: () -> Unit,
-) {
-    val bg =
-        if (!selected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary
-    val textColor = if (!selected) Color.Black else Color.White
-    Box(
-        modifier =
-            Modifier
-                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
-                .background(bg)
-                .clickable { click() },
-    ) {
-        Text(
-            text = buttonText,
-            color = textColor,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(10.dp),
-        )
     }
 }
 
