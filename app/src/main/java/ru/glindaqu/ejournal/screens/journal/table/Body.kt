@@ -5,13 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -26,14 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import ru.glindaqu.ejournal.DEFAULT_TABLE_CELL_SIZE
+import androidx.navigation.NavHostController
 import ru.glindaqu.ejournal.database.room.tables.People
-import ru.glindaqu.ejournal.database.room.tables.PeopleKReturnTypes
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
+import ru.glindaqu.ejournal.navigation.Route
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 
 enum class JournalTableBodyState {
@@ -49,6 +44,7 @@ fun TableBody(
     displayOnlySurname: Boolean,
     scrollState: ScrollState,
     dialogState: DayInfoDialogState,
+    navHostController: NavHostController,
     reassignStudentsListWidth: (LayoutCoordinates) -> Unit,
 ) {
     val viewModel =
@@ -73,6 +69,7 @@ fun TableBody(
                 displayOnlySurname = displayOnlySurname,
                 studentsList = studentsList,
                 reassignStudentsListWidth = reassignStudentsListWidth,
+                navHostController = navHostController,
             ) {
                 StudentStats(
                     scrollState = scrollState,
@@ -86,6 +83,7 @@ fun TableBody(
                     displayOnlySurname = displayOnlySurname,
                     studentsList = studentsList,
                     reassignStudentsListWidth = reassignStudentsListWidth,
+                    navHostController = navHostController,
                 )
                 JournalInfoPlaceholder()
             }
@@ -116,6 +114,7 @@ internal fun JournalInfoPlaceholder() {
 internal fun TableBodyContent(
     displayOnlySurname: Boolean,
     studentsList: List<People>,
+    navHostController: NavHostController? = null,
     reassignStudentsListWidth: (LayoutCoordinates) -> Unit,
     content: (@Composable () -> Unit)? = null,
 ) {
@@ -131,30 +130,9 @@ internal fun TableBodyContent(
         StudentsNames(
             students = studentsList,
             onGlobalPositioned = { reassignStudentsListWidth(it) },
-            item = {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier
-                            .padding(top = 1.dp)
-                            .height(DEFAULT_TABLE_CELL_SIZE - 2.dp)
-                            .background(MaterialTheme.colorScheme.onBackground),
-                ) {
-                    Text(
-                        text =
-                            it.get(
-                                if (displayOnlySurname) {
-                                    PeopleKReturnTypes.LASTNAME
-                                } else {
-                                    PeopleKReturnTypes.FULL_NAME
-                                },
-                            ),
-                        textAlign = TextAlign.Start,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(5.dp),
-                    )
-                }
+            isDisplayOnlySurname = displayOnlySurname,
+            onClick = {
+                navHostController?.navigate(Route.detail.get() + "/${it.id!!}")
             },
         )
         content?.invoke()

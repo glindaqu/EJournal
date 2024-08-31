@@ -39,4 +39,7 @@ interface MarkDao {
 
     @Query("DELETE FROM Mark")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM Mark WHERE studentId = :id")
+    fun getAllByMarksStudent(id: Int): Flow<List<Mark>>
 }

@@ -42,4 +42,14 @@ interface SkipDao {
 
     @Query("DELETE FROM Skip")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM Skip WHERE studentId = :id AND date BETWEEN :start AND :end")
+    fun getAllSkipsByStudentInRange(
+        id: Int,
+        start: Long,
+        end: Long,
+    ): Flow<List<Skip>>
+
+    @Query("SELECT * FROM Skip WHERE studentId = :id")
+    fun getAllSkipsByStudentInAllTime(id: Int): Flow<List<Skip>>
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
@@ -44,7 +45,7 @@ import java.util.Date
 @Suppress("ktlint:standard:function-naming")
 @SuppressLint("UnrememberedMutableState", "SimpleDateFormat")
 @Composable
-fun Journal() {
+fun Journal(navHostController: NavHostController) {
     val calendar = Calendar.getInstance()
 
     val viewModel =
@@ -146,6 +147,7 @@ fun Journal() {
                 displayOnlySurname = displayOnlySurname.value,
                 scrollState = hScrollState,
                 dialogState = dayInfoDialogState,
+                navHostController = navHostController,
             ) {
                 studentListWidth = with(density) { it.size.width.toDp() }
             }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.glindaqu.ejournal.screens.Home
+import ru.glindaqu.ejournal.screens.detail.Detail
 import ru.glindaqu.ejournal.screens.journal.Journal
 import ru.glindaqu.ejournal.screens.settings.Settings
 import ru.glindaqu.ejournal.screens.statistics.Statistics
@@ -35,7 +36,7 @@ fun NavGraph(
             onDestinationChanged(Route.home.get())
         }
         composable(Route.journal.get()) {
-            Journal()
+            Journal(navHostController = navHostController)
             onDestinationChanged(Route.journal.get())
         }
         composable(Route.statistics.get()) {
@@ -69,6 +70,14 @@ fun NavGraph(
                 id = it.arguments?.getString("id")!!.toInt(),
                 popUp = { navHostController.navigate(Route.students.get()) },
             )
+        }
+        composable(
+            route = Route.detail.get() + "/{id}",
+            arguments = listOf(navArgument("id") { NavType.StringType }),
+        ) {
+            Detail(studentId = it.arguments?.getString("id")!!.toInt(), onClose = {
+                navHostController.navigateUp()
+            })
         }
     }
 }

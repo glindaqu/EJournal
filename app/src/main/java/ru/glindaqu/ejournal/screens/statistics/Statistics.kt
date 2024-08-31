@@ -135,7 +135,7 @@ fun Statistics() {
     }
 }
 
-@SuppressLint("SimpleDateFormat")
+@SuppressLint("SimpleDateFormat", "DefaultLocale")
 @Suppress("ktlint:standard:function-naming")
 @Composable
 private fun Body(

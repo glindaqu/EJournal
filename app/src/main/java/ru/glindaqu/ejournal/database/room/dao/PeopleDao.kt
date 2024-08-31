@@ -46,4 +46,7 @@ interface PeopleDao {
 
     @Query("SELECT * FROM People WHERE id = :id LIMIT 1")
     suspend fun get(id: Int): People
+
+    @Query("SELECT * FROM People WHERE id = :id LIMIT 1")
+    fun getStudentAsync(id: Int): Flow<People>
 }
