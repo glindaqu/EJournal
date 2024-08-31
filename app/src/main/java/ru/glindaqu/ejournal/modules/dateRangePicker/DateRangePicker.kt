@@ -62,12 +62,13 @@ fun DateRangePicker(
         return
     }
 
+    val calendar = Calendar.getInstance()
+
     var currentMonth by remember { mutableIntStateOf(Date().month) }
 
-    var startDate by remember { mutableStateOf(Date(0)) }
-    var endDate by remember { mutableStateOf(Date(0)) }
+    var startDate by remember { mutableStateOf(state.defaultStartDate) }
+    var endDate by remember { mutableStateOf(state.defaultEndDate) }
 
-    val calendar = Calendar.getInstance()
     val daysInMonth by derivedStateOf {
         calendar.set(Calendar.MONTH, currentMonth)
         calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -126,7 +127,7 @@ fun DateRangePicker(
                             date = currentDate,
                             isSelect = currentDate in startDate..endDate || startDate == currentDate,
                             onClick = {
-                                if (startDate.time == 0L || endDate.time != 0L) {
+                                if (startDate.time == 0L || endDate.time != 0L || startDate >= it) {
                                     startDate = it
                                     endDate = Date(0)
                                 } else {
@@ -146,6 +147,7 @@ fun DateRangePicker(
                     Button(
                         onClick = {
                             onDateSelected(startDate, endDate)
+                            state.setDefaults(startDate, endDate)
                             state.close()
                         },
                         enabled = isConfirmEnabled,

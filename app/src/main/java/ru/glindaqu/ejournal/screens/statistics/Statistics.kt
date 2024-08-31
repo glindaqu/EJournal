@@ -149,12 +149,31 @@ private fun Body(
     val density = LocalDensity.current
     val dateRangePickerState = rememberDateRangePickerState()
 
-    var labelText by remember { mutableStateOf(SimpleDateFormat("dd MMMM", Locale("ru")).format(Date())) }
+    var labelText by remember {
+        mutableStateOf(
+            "${
+                SimpleDateFormat(
+                    "dd MMMM",
+                    Locale("ru"),
+                ).format(dateRangePickerState.defaultStartDate)
+            } - ${
+                SimpleDateFormat(
+                    "dd MMMM",
+                    Locale("ru"),
+                ).format(dateRangePickerState.defaultEndDate)
+            }",
+        )
+    }
 
     DateRangePicker(state = dateRangePickerState, onDateSelected = { s, e ->
         onDateSelected(s, e)
         labelText =
-            "${SimpleDateFormat("dd MMMM", Locale("ru")).format(s)} - ${SimpleDateFormat("dd MMMM", Locale("ru")).format(e)}"
+            "${SimpleDateFormat("dd MMMM", Locale("ru")).format(s)} - ${
+                SimpleDateFormat(
+                    "dd MMMM",
+                    Locale("ru"),
+                ).format(e)
+            }"
     })
 
     Column {
