@@ -154,6 +154,7 @@ fun DateRangePicker(
                                 containerColor = MaterialTheme.colorScheme.onBackground,
                                 disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
                             ),
+                        shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
                     ) {
                         Text(
                             text = "OK",
