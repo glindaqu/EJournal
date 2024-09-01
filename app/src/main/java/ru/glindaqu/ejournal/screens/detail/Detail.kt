@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +42,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.glindaqu.ejournal.DEFAULT_CORNER_CLIP
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
@@ -47,6 +60,7 @@ import ru.glindaqu.ejournal.database.room.tables.PeopleKReturnTypes
 import ru.glindaqu.ejournal.viewModel.implementation.DetailViewModel
 import java.util.Calendar
 import java.util.Date
+import co.yml.charts.ui.linechart.model.IntersectionPoint as IntersectionPoint1
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -109,7 +123,8 @@ private fun Body(
         Column(
             modifier =
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(
                         horizontal = DEFAULT_HORIZONTAL_PADDING,
                         vertical = DEFAULT_VERTICAL_PADDING,
@@ -122,6 +137,7 @@ private fun Body(
                 BodyType.SKIPS -> SkipsContent(viewModel = viewModel, student = student)
                 else -> OverviewContent(viewModel = viewModel, student = student)
             }
+            Plot(viewModel, student)
         }
     }
 }
@@ -307,4 +323,79 @@ private fun Item(
             )
         }
     }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+private fun Plot(
+    viewModel: DetailViewModel,
+    student: People,
+) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val skips by viewModel
+        .getAllSkipsByStudent(
+            student.id!!,
+            Date(year, month, calendar.getActualMinimum(Calendar.DAY_OF_MONTH)).time,
+            Date(year, month, calendar.getActualMaximum(Calendar.DAY_OF_MONTH)).time,
+        ).collectAsState(
+            initial = listOf(),
+        )
+    val pointsData: MutableList<Point> =
+        mutableListOf()
+    val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    var maxSkipped = Int.MIN_VALUE
+    for (i in 1..maxDay) {
+        val skipped = skips.filter { it.date == Date(year, month, i).time }.size
+        if (skipped > maxSkipped) maxSkipped = skipped
+        pointsData.add(Point(i.toFloat(), skipped.toFloat()))
+    }
+
+    val xAxisData =
+        AxisData
+            .Builder()
+            .axisStepSize(40.dp)
+            .backgroundColor(Color.White)
+            .steps(pointsData.size - 1)
+            .labelData { i -> i.toString() }
+            .labelAndAxisLinePadding(15.dp)
+            .build()
+
+    val yAxisData =
+        AxisData
+            .Builder()
+            .steps(maxSkipped)
+            .backgroundColor(Color.White)
+            .labelAndAxisLinePadding(20.dp)
+            .labelData { i ->
+                i.toString()
+            }.build()
+    val lineChartData =
+        LineChartData(
+            linePlotData =
+                LinePlotData(
+                    lines =
+                        listOf(
+                            Line(
+                                dataPoints = pointsData,
+                                lineStyle = LineStyle(color = MaterialTheme.colorScheme.primary),
+                                intersectionPoint = IntersectionPoint1(color = MaterialTheme.colorScheme.primary),
+                                shadowUnderLine = ShadowUnderLine(color = MaterialTheme.colorScheme.primary),
+                            ),
+                        ),
+                ),
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            gridLines = GridLines(color = MaterialTheme.colorScheme.background),
+            backgroundColor = Color.White,
+        )
+    LineChart(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
+        lineChartData = lineChartData,
+    )
 }
