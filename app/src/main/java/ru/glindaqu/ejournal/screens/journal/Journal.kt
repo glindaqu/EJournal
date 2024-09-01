@@ -63,7 +63,7 @@ fun Journal(navHostController: NavHostController) {
     val displayOnlySurname =
         derivedStateOf {
             when {
-                hScrollState.value <= 0 -> false
+                hScrollState.value <= 0 && subject.id != null -> false
                 else -> true
             }
         }
