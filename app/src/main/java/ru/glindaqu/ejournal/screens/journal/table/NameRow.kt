@@ -41,8 +41,7 @@ fun StudentsNames(
                     onGlobalPositioned(coordinates)
                 }.clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
     ) {
-        for (i in students.indices) {
-            val it = students[i]
+        students.sortedBy { it.lastname }.forEachIndexed { index, it ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier =
@@ -54,13 +53,14 @@ fun StudentsNames(
             ) {
                 Text(
                     text =
-                        it.get(
-                            if (isDisplayOnlySurname) {
-                                PeopleKReturnTypes.LASTNAME
-                            } else {
-                                PeopleKReturnTypes.FULL_NAME
-                            },
-                        ),
+                        "${index + 1}. " +
+                            it.get(
+                                if (isDisplayOnlySurname) {
+                                    PeopleKReturnTypes.LASTNAME
+                                } else {
+                                    PeopleKReturnTypes.FULL_NAME
+                                },
+                            ),
                     textAlign = TextAlign.Start,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
