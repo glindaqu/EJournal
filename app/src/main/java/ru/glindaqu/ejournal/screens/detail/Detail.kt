@@ -250,13 +250,12 @@ private fun SwitcherItem(
     Box(
         modifier =
             Modifier
-                .padding(3.dp)
-                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
-                .background(color)
-                .padding(7.dp)
                 .clickable {
                     onStateChanged()
-                },
+                }.padding(3.dp)
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                .background(color)
+                .padding(7.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(text = optionText, color = textColor, fontSize = 22.sp)
