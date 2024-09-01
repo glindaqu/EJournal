@@ -137,7 +137,6 @@ private fun Body(
                 BodyType.SKIPS -> SkipsContent(viewModel = viewModel, student = student)
                 else -> OverviewContent(viewModel = viewModel, student = student)
             }
-            Plot(viewModel, student)
         }
     }
 }
@@ -194,6 +193,7 @@ private fun SkipsContent(
             )
         }
     }
+    Plot(viewModel, student)
 }
 
 private enum class BodyType {
@@ -390,6 +390,19 @@ private fun Plot(
             gridLines = GridLines(color = MaterialTheme.colorScheme.background),
             backgroundColor = Color.White,
         )
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = DEFAULT_VERTICAL_PADDING),
+    ) {
+        Text(
+            text = "Пропуски на текущий месяц",
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
     LineChart(
         modifier =
             Modifier
