@@ -41,7 +41,7 @@ fun StudentsNames(
                     onGlobalPositioned(coordinates)
                 }.clip(RoundedCornerShape(DEFAULT_CORNER_CLIP)),
     ) {
-        students.sortedBy { it.lastname }.forEachIndexed { index, it ->
+        students.forEachIndexed { index, it ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier =

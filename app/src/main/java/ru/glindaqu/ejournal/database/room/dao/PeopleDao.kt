@@ -7,10 +7,10 @@ import ru.glindaqu.ejournal.database.room.tables.People
 
 @Dao
 interface PeopleDao {
-    @Query("SELECT * FROM People")
+    @Query("SELECT * FROM People ORDER BY lastname")
     fun getAll(): Flow<List<People>>
 
-    @Query("SELECT * FROM People WHERE role = 'student'")
+    @Query("SELECT * FROM People WHERE role = 'student' ORDER BY lastname")
     fun getAllStudents(): Flow<List<People>>
 
     @Query("SELECT * FROM People WHERE role = 'student'")
