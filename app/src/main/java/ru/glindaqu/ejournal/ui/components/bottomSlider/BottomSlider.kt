@@ -36,11 +36,11 @@ fun BottomSlider(navHostController: NavHostController) {
                 navHostController.navigate(Route.subjects.get())
             }
         }
-        item {
-            BottomSliderItem(
-                textSrc = R.string.bot_bar_slider_settings,
-                painterSrc = R.drawable.settings,
-            ) {}
-        }
+//        item {
+//            BottomSliderItem(
+//                textSrc = R.string.bot_bar_slider_settings,
+//                painterSrc = R.drawable.settings,
+//            ) {}
+//        }
     }
 }
