@@ -34,7 +34,15 @@ data class People(
             PeopleKReturnTypes.LASTNAME_NAME -> "${this.lastname} ${this.name}"
             PeopleKReturnTypes.LASTNAME_INITIALS ->
                 "${this.lastname} " +
-                    "${this.name.first().uppercase()}. " +
-                    "${this.patronymic.first().uppercase()}."
+                    (if (this.name.isNotBlank()) "${this.name.first().uppercase()}. " else "") +
+                    (
+                        if (this.patronymic.isNotBlank()) {
+                            "${
+                                this.patronymic.first().uppercase()
+                            }."
+                        } else {
+                            ""
+                        }
+                    )
         }
 }
