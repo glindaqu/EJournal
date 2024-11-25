@@ -29,10 +29,10 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Route.statistics.get(),
+        startDestination = Route.home.get(),
     ) {
         composable(Route.home.get()) {
-            Home()
+            Home(navController = navHostController)
             onDestinationChanged(Route.home.get())
         }
         composable(Route.journal.get()) {

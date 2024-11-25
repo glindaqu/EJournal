@@ -41,6 +41,7 @@ import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
 import ru.glindaqu.ejournal.DEFAULT_VERTICAL_PADDING
 import ru.glindaqu.ejournal.database.room.tables.Mark
 import ru.glindaqu.ejournal.database.room.tables.Skip
+import ru.glindaqu.ejournal.screens.journal.Appointment
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -127,6 +128,9 @@ fun DayInfoDialog(
                                         .background(MaterialTheme.colorScheme.background)
                                         .clickable {
                                             deleteSkip(skip)
+                                            if (skips.isEmpty()) {
+                                                state.appointment = Appointment.HERE
+                                            }
                                         }.padding(10.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -155,13 +159,19 @@ fun DayInfoDialog(
                                 .padding(top = 8.dp),
                     ) {
                         Button(
-                            onClick = { addSkip(0) },
+                            onClick = {
+                                addSkip(0)
+                                state.appointment = Appointment.ABSENCE
+                            },
                             shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
                         ) {
                             Text(text = "Не был(а)", fontSize = 15.sp)
                         }
                         Button(
-                            onClick = { addSkip(1) },
+                            onClick = {
+                                addSkip(1)
+                                state.appointment = Appointment.RESPECTFUL
+                            },
                             shape = RoundedCornerShape(DEFAULT_CORNER_CLIP),
                         ) {
                             Text(text = "Не был(а), уважительная", fontSize = 15.sp)

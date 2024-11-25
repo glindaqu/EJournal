@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import ru.glindaqu.ejournal.DEFAULT_HORIZONTAL_PADDING
@@ -31,7 +32,7 @@ import ru.glindaqu.ejournal.viewModel.implementation.HomeViewModel
  * Функция домашнего экрана пользователя
  */
 @Composable
-fun Home() {
+fun Home(navController: NavHostController) {
     val viewModel =
         ViewModelProvider(LocalContext.current as ComponentActivity)[HomeViewModel::class.java]
 
@@ -58,10 +59,7 @@ fun Home() {
             itemSelectedColor = MaterialTheme.colorScheme.background,
             weekdayTitles = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"),
         ) { }
-
-        // TODO: check if there is a memory leak
         TimeWidget()
-
-        QuickOptionsList()
+        QuickOptionsList(navController = navController)
     }
 }

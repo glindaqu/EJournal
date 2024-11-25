@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import ru.glindaqu.ejournal.database.room.tables.People
 import ru.glindaqu.ejournal.modules.dayInfo.DayInfoDialogState
+import ru.glindaqu.ejournal.screens.journal.Appointment
 import ru.glindaqu.ejournal.viewModel.implementation.JournalViewModel
 import java.util.Calendar
 import java.util.Date
@@ -70,11 +71,22 @@ internal fun StudentStatsBody(
                         .collectAsState(
                             initial = listOf(),
                         )
+                    val skips by viewModel
+                        .getSkips(date.time, student.id!!, subject.id!!)
+                        .collectAsState(initial = listOf())
                     StudentsStatsItem(
                         marks = marks.filter { it.date == date.time },
                         date = date.time,
                         student = student,
                         dialogState = dialogState,
+                        appointment =
+                            if (skips.isEmpty()) {
+                                Appointment.HERE
+                            } else if (skips[0].reasonType == 0) {
+                                Appointment.ABSENCE
+                            } else {
+                                Appointment.RESPECTFUL
+                            },
                     )
                 }
             }

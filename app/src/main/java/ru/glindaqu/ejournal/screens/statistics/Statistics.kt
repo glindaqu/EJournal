@@ -2,29 +2,30 @@ package ru.glindaqu.ejournal.screens.statistics
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -176,6 +177,13 @@ private fun Body(
             }"
     })
 
+    LaunchedEffect(Unit) {
+        onDateSelected(dateRangePickerState.defaultStartDate, dateRangePickerState.defaultEndDate)
+    }
+
+    val hScrollState = rememberScrollState()
+    val vScrollState = rememberScrollState()
+
     Column {
         Row(
             modifier =
@@ -217,33 +225,39 @@ private fun Body(
                             topStart = DEFAULT_CORNER_CLIP,
                             topEnd = DEFAULT_CORNER_CLIP,
                         ),
-                    ).horizontalScroll(rememberScrollState())
-                    .fillMaxHeight()
+                    ).fillMaxHeight()
                     .background(MaterialTheme.colorScheme.onBackground),
         ) {
-            StatisticTableHeader(subjects = subjects, startPadding = legendSize)
-            Row {
-                LazyColumn(
+            StatisticTableHeader(
+                subjects = subjects,
+                startPadding = legendSize,
+                state = hScrollState,
+            )
+            Row(modifier = Modifier.verticalScroll(vScrollState)) {
+                Column(
                     modifier =
                         Modifier
+                            .padding(1.dp)
                             .onGloballyPositioned {
                                 legendSize = with(density) { it.size.width.toDp() }
                             }.background(MaterialTheme.colorScheme.onBackground),
-                    contentPadding = PaddingValues(1.dp),
                 ) {
-                    items(students) {
+                    students.forEach {
                         StatisticsNameRow(student = it)
                     }
                 }
                 Column(
                     horizontalAlignment = Alignment.End,
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                        contentPadding = PaddingValues(top = 1.dp, start = 1.dp, bottom = 2.dp),
+                    Column(
+                        modifier =
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .horizontalScroll(hScrollState)
+                                .wrapContentSize(),
                         horizontalAlignment = Alignment.End,
                     ) {
-                        items(students) { student ->
+                        students.forEach { student ->
                             Row {
                                 val studentSkips = skips.filter { it.studentId == student.id!! }
                                 subjects.forEach { subject ->
@@ -269,14 +283,23 @@ private fun Body(
                             }
                         }
                     }
-                    Row {
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(hScrollState)
+                                .background(MaterialTheme.colorScheme.onBackground),
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        for (i in 0..<subjects.size - 1) {
+                            TableCell(text = "")
+                        }
                         Box(
-                            modifier = Modifier.height(DEFAULT_TABLE_CELL_SIZE),
+                            modifier = Modifier.size(DEFAULT_TABLE_CELL_SIZE),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
                                 text = "Итого",
-                                fontSize = 18.sp,
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -319,6 +342,7 @@ private fun TableCell(text: String) {
 fun StatisticTableHeader(
     subjects: List<Pair>,
     startPadding: Dp,
+    state: ScrollState,
 ) {
     Row(
         modifier =
@@ -331,7 +355,8 @@ fun StatisticTableHeader(
                     ),
                 ).background(MaterialTheme.colorScheme.onBackground)
                 .padding(start = startPadding)
-                .wrapContentSize(),
+                .wrapContentSize()
+                .horizontalScroll(state),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.Bottom,
     ) {

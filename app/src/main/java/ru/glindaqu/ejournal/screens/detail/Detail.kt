@@ -187,9 +187,10 @@ private fun SkipsContent(
             val currentSkips = skips.filter { skip -> skip.pairId == subject.id }
             val skipsRespectful = currentSkips.filter { skip -> skip.reasonType == 1 }
             val skipsDisrespectful = currentSkips.filter { skip -> skip.reasonType == 0 }
-            Item(
+            SkipItem(
                 title = subject.title,
-                textContent = "${skipsRespectful.size * 2}/" + "${skipsDisrespectful.size * 2}/" + "${currentSkips.size * 2}",
+                respectful = skipsRespectful.size,
+                skip = skipsDisrespectful.size,
             )
         }
     }
@@ -320,6 +321,58 @@ private fun Item(
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
             )
+        }
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+private fun SkipItem(
+    title: String,
+    respectful: Int,
+    skip: Int,
+) {
+    Row(
+        modifier =
+            Modifier
+                .padding(
+                    0.5.dp,
+                ).fillMaxWidth()
+                .clip(RoundedCornerShape(DEFAULT_CORNER_CLIP))
+                .background(MaterialTheme.colorScheme.onBackground)
+                .padding(10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(modifier = Modifier.weight(0.7f)) {
+            Text(text = title, color = Color.Black)
+        }
+
+        Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {
+            Box(contentAlignment = Alignment.CenterEnd) {
+                Text(
+                    text = "${skip * 2}/",
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Box(contentAlignment = Alignment.CenterEnd) {
+                Text(
+                    text = "${respectful * 2}/",
+                    color = Color(0xFFFFA443),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Box(contentAlignment = Alignment.CenterEnd) {
+                Text(
+                    text = "${(skip + respectful) * 2}",
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 }
